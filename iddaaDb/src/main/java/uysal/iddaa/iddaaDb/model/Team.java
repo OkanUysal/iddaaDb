@@ -1,5 +1,7 @@
 package uysal.iddaa.iddaaDb.model;
 
+import java.util.Set;
+
 import javax.persistence.*;
 
 @Entity
@@ -7,20 +9,32 @@ import javax.persistence.*;
 public class Team {
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	private String name;
-	
-	@ManyToOne(cascade= CascadeType.ALL)
-    @JoinColumn(name = "league_id")
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "league_id")
 	private League league;
 
-	public Team(Long id, String name, League league) {
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "home_matches", cascade = CascadeType.ALL)
+	private Set<Team> homeMatchs;
+
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "away_matches", cascade = CascadeType.ALL)
+	private Set<Team> awayMatches;
+
+	public Team() {
+		super();
+	}
+
+	public Team(Long id, String name, League league, Set<Team> homeMatchs, Set<Team> awayMatches) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.league = league;
+		this.homeMatchs = homeMatchs;
+		this.awayMatches = awayMatches;
 	}
 
 	public Long getId() {
@@ -46,6 +60,21 @@ public class Team {
 	public void setLeague(League league) {
 		this.league = league;
 	}
-	
-	
+
+	public Set<Team> getHomeMatchs() {
+		return homeMatchs;
+	}
+
+	public void setHomeMatchs(Set<Team> homeMatchs) {
+		this.homeMatchs = homeMatchs;
+	}
+
+	public Set<Team> getAwayMatches() {
+		return awayMatches;
+	}
+
+	public void setAwayMatches(Set<Team> awayMatches) {
+		this.awayMatches = awayMatches;
+	}
+
 }

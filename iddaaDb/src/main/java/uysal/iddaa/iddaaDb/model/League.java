@@ -27,8 +27,12 @@ public class League {
 	@JoinColumn(name = "country_id")
 	private Country country;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "league", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "teams", cascade = CascadeType.ALL)
 	private Set<Team> teams;
+
+	public League() {
+		super();
+	}
 
 	public League(Long id, String name, Country country, Set<Team> teams) {
 		super();

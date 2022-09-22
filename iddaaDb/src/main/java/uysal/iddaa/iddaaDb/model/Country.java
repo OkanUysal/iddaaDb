@@ -14,8 +14,12 @@ public class Country {
 
 	private String name;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "country", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "leagues", cascade = CascadeType.ALL)
 	private Set<League> leagues;
+
+	public Country() {
+		super();
+	}
 
 	public Country(Long id, String name, Set<League> leagues) {
 		super();
