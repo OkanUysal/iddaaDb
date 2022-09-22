@@ -18,22 +18,22 @@ public class Team {
 	@JoinColumn(name = "league_id")
 	private League league;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "home_matches", cascade = CascadeType.ALL)
-	private Set<Team> homeMatchs;
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "home", cascade = CascadeType.ALL)
+	private Set<MatchDetail> homeMatches;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "away_matches", cascade = CascadeType.ALL)
-	private Set<Team> awayMatches;
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "away", cascade = CascadeType.ALL)
+	private Set<MatchDetail> awayMatches;
 
 	public Team() {
 		super();
 	}
 
-	public Team(Long id, String name, League league, Set<Team> homeMatchs, Set<Team> awayMatches) {
+	public Team(Long id, String name, League league, Set<MatchDetail> homeMatches, Set<MatchDetail> awayMatches) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.league = league;
-		this.homeMatchs = homeMatchs;
+		this.homeMatches = homeMatches;
 		this.awayMatches = awayMatches;
 	}
 
@@ -61,19 +61,19 @@ public class Team {
 		this.league = league;
 	}
 
-	public Set<Team> getHomeMatchs() {
-		return homeMatchs;
+	public Set<MatchDetail> getHomeMatches() {
+		return homeMatches;
 	}
 
-	public void setHomeMatchs(Set<Team> homeMatchs) {
-		this.homeMatchs = homeMatchs;
+	public void setHomeMatchs(Set<MatchDetail> homeMatches) {
+		this.homeMatches = homeMatches;
 	}
 
-	public Set<Team> getAwayMatches() {
+	public Set<MatchDetail> getAwayMatches() {
 		return awayMatches;
 	}
 
-	public void setAwayMatches(Set<Team> awayMatches) {
+	public void setAwayMatches(Set<MatchDetail> awayMatches) {
 		this.awayMatches = awayMatches;
 	}
 
