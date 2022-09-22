@@ -50,5 +50,4 @@ public class Country {
 	public void setLeagues(Set<League> leagues) {
 		this.leagues = leagues;
 	}
-
 }
