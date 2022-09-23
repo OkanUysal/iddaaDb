@@ -3,7 +3,6 @@ package uysal.iddaa.iddaaDb.service;
 import org.springframework.stereotype.Repository;
 
 import uysal.iddaa.iddaaDb.model.Country;
-import uysal.iddaa.iddaaDb.model.League;
 
 import java.util.List;
 import java.util.Optional;

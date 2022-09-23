@@ -4,6 +4,8 @@ import java.util.Set;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "Team")
 public class Team {
@@ -15,6 +17,7 @@ public class Team {
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "league_id")
+	@JsonIgnoreProperties(value = { "country", "teams" })
 	private League league;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "home", cascade = CascadeType.ALL)
