@@ -32,19 +32,15 @@ public class League {
 	@JsonIgnoreProperties(value = { "leagues" })
 	private Country country;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "league", cascade = CascadeType.ALL)
-	private Set<Team> teams;
-
 	public League() {
 		super();
 	}
 
-	public League(Long id, String name, Country country, Set<Team> teams) {
+	public League(Long id, String name, Country country) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.country = country;
-		this.teams = teams;
 	}
 
 	public Long getId() {
@@ -69,14 +65,6 @@ public class League {
 
 	public void setCountry(Country country) {
 		this.country = country;
-	}
-
-	public Set<Team> getTeams() {
-		return teams;
-	}
-
-	public void setTeams(Set<Team> teams) {
-		this.teams = teams;
 	}
 
 }
