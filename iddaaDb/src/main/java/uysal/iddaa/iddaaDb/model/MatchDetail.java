@@ -19,6 +19,10 @@ public class MatchDetail {
 	@JoinColumn(name = "away_id")
 	private Team away;
 
+	@OneToOne(mappedBy = "match_detail", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private MatchResult match_result;
+
 	private int home_half_time_score;
 
 	private int away_half_time_score;
@@ -72,6 +76,14 @@ public class MatchDetail {
 	public void setAway(Team away) {
 		this.away = away;
 	}
+	
+	public MatchResult getMatch_result() {
+		return match_result;
+	}
+
+	public void setMatch_result(MatchResult match_result) {
+		this.match_result = match_result;
+	}
 
 	public int getHome_half_time_score() {
 		return home_half_time_score;
@@ -120,5 +132,7 @@ public class MatchDetail {
 	public void setDate(Date date) {
 		this.date = date;
 	}
+	
+	
 
 }
