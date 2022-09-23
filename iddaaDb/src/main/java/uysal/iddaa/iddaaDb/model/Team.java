@@ -15,11 +15,6 @@ public class Team {
 
 	private String name;
 
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "league_id")
-	@JsonIgnoreProperties(value = { "country", "teams" })
-	private League league;
-
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "home", cascade = CascadeType.ALL)
 	private Set<MatchDetail> homeMatches;
 
@@ -30,11 +25,10 @@ public class Team {
 		super();
 	}
 
-	public Team(Long id, String name, League league, Set<MatchDetail> homeMatches, Set<MatchDetail> awayMatches) {
+	public Team(Long id, String name, Set<MatchDetail> homeMatches, Set<MatchDetail> awayMatches) {
 		super();
 		this.id = id;
 		this.name = name;
-		this.league = league;
 		this.homeMatches = homeMatches;
 		this.awayMatches = awayMatches;
 	}
@@ -53,14 +47,6 @@ public class Team {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public League getLeague() {
-		return league;
-	}
-
-	public void setLeague(League league) {
-		this.league = league;
 	}
 
 	public Set<MatchDetail> getHomeMatches() {
