@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "League")
 public class League {
@@ -25,6 +27,9 @@ public class League {
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "country_id")
+//	@JsonBackReference
+//	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = Long.class)
+	@JsonIgnoreProperties(value = { "leagues" })
 	private Country country;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "league", cascade = CascadeType.ALL)

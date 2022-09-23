@@ -4,6 +4,8 @@ import java.util.Set;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "Contry")
 public class Country {
@@ -14,6 +16,8 @@ public class Country {
 	private String name;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "country", cascade = CascadeType.ALL)
+//	@JsonManagedReference
+	@JsonIgnoreProperties(value = { "country", "teams" })
 	private Set<League> leagues;
 
 	public Country() {
