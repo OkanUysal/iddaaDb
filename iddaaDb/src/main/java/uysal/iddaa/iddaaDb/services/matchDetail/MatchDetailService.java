@@ -9,5 +9,7 @@ public interface MatchDetailService {
 	List<Object> findAllMatchDetailSumarry();
 
 	Optional<MatchDetail> findById(Long id);
+	
+	MatchDetail addNewMatchDetail(MatchDetail matchDetail);
 
 }
