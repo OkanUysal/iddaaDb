@@ -12,5 +12,7 @@ public interface TeamService {
 	Optional<Team> findById(Long id);
 
 	Team findByName(String name);
+	
+	Team addNewTeam(Team team);
 
 }
