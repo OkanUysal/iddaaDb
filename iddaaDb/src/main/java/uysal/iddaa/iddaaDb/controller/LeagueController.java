@@ -32,9 +32,9 @@ public class LeagueController {
 	public League getLeagueByName(@PathVariable String name) {
 		return leagueService.findByName(name);
 	}
-
+	
 	@PostMapping(value = "addLeague")
-	public League addNewLeague(@RequestBody String input) {
-		return leagueService.addNewLeague(input);
+	public League addNewLeague(@RequestBody League league) {
+		return leagueService.addNewLeague(league);
 	}
 }

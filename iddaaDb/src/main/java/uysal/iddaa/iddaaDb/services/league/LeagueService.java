@@ -12,5 +12,5 @@ public interface LeagueService {
 
 	League findByName(String name);
 	
-	League addNewLeague(String data);
+	League addNewLeague(League league);
 }
