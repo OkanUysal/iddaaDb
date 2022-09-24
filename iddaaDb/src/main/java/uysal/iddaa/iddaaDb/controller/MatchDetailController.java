@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetail;
@@ -24,5 +26,10 @@ public class MatchDetailController {
 	@GetMapping(value = "/matchDetail/{id}")
 	public MatchDetail getLeagueById(@PathVariable Long id) {
 		return matchDetailService.findById(id).get();
+	}
+	
+	@PostMapping(value = "addMatchDetail")
+	public MatchDetail addNewMatchDetail(@RequestBody MatchDetail matchDetail) {
+		return matchDetailService.addNewMatchDetail(matchDetail);
 	}
 }
