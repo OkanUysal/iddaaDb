@@ -1,10 +1,12 @@
-package uysal.iddaa.iddaaDb.model;
+package uysal.iddaa.iddaaDb.models.country;
 
 import java.util.Set;
 
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import uysal.iddaa.iddaaDb.models.leaugue.League;
 
 @Entity
 @Table(name = "Contry")

@@ -1,4 +1,4 @@
-package uysal.iddaa.iddaaDb.model;
+package uysal.iddaa.iddaaDb.models.leaugue;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -10,6 +10,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import uysal.iddaa.iddaaDb.models.country.Country;
 
 @Entity
 @Table(name = "League")
@@ -23,8 +25,6 @@ public class League {
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "country_id")
-//	@JsonBackReference
-//	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = Long.class)
 	@JsonIgnoreProperties(value = { "leagues" })
 	private Country country;
 

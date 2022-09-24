@@ -1,4 +1,4 @@
-package uysal.iddaa.iddaaDb.model;
+package uysal.iddaa.iddaaDb.models.matchresult;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +9,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetail;
 
 
 
