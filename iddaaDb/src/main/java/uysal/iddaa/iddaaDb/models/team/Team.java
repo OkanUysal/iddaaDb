@@ -4,6 +4,8 @@ import java.util.Set;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetail;
 
 @Entity
@@ -16,9 +18,11 @@ public class Team {
 	private String name;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "home", cascade = CascadeType.ALL)
+	@JsonIgnoreProperties(value = { "match_result" })
 	private Set<MatchDetail> homeMatches;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "away", cascade = CascadeType.ALL)
+	@JsonIgnoreProperties(value = { "match_result" })
 	private Set<MatchDetail> awayMatches;
 
 	public Team() {
