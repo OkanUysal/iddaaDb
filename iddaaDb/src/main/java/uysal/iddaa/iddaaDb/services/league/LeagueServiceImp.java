@@ -6,9 +6,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
 import uysal.iddaa.iddaaDb.models.leaugue.League;
 import uysal.iddaa.iddaaDb.models.leaugue.LeagueRepository;
 import uysal.iddaa.iddaaDb.services.country.CountryService;
@@ -36,16 +33,10 @@ public class LeagueServiceImp implements LeagueService {
 	public League findByName(String name) {
 		return leagueRepository.findByName(name);
 	}
-
+	
 	@Override
-	public League addNewLeague(String data) {
-		JsonObject object = new JsonParser().parse(data).getAsJsonObject();
-
-		League league = new League();
-
-		league.setName(object.get("name").getAsString());
-		league.setCountry(countryService.findById(object.get("country_id").getAsLong()).get());
-
+	public League addNewLeague(League league) {
+		league.setCountry(countryService.findById(league.getCountry().getId()).get());
 		return leagueRepository.save(league);
 	}
 
