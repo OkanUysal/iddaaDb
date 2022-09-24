@@ -9,32 +9,32 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import uysal.iddaa.iddaaDb.model.Country;
-import uysal.iddaa.iddaaDb.service.CountryRepository;
+import uysal.iddaa.iddaaDb.models.country.Country;
+import uysal.iddaa.iddaaDb.services.country.CountryService;
 
 @RestController
 public class CountryController {
 
 	@Autowired
-	private CountryRepository countryRepository;
+	private CountryService countryService;
 
 	@GetMapping(value = "/countries")
 	public List<Object> getCountries() {
-		return countryRepository.findAllCountrySumarry();
+		return countryService.findAllCountrySumarry();
 	}
 
 	@GetMapping(value = "/country/{id}")
 	public Country getCountryById(@PathVariable Long id) {
-		return countryRepository.findById(id).get();
+		return countryService.findById(id).get();
 	}
 
 	@GetMapping(value = "/countryName/{name}")
 	public Country getCountryByName(@PathVariable String name) {
-		return countryRepository.findByName(name);
+		return countryService.findByName(name);
 	}
 	
 	@PostMapping(value = "/addCountry")
 	public Country addNewCountry(@RequestBody Country country) {
-		return countryRepository.save(country);
+		return countryService.save(country);
 	}
 }

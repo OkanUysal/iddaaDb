@@ -1,8 +1,10 @@
-package uysal.iddaa.iddaaDb.model;
+package uysal.iddaa.iddaaDb.models.team;
 
 import java.util.Set;
 
 import javax.persistence.*;
+
+import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetail;
 
 @Entity
 @Table(name = "Team")

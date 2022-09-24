@@ -7,27 +7,27 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import uysal.iddaa.iddaaDb.model.Team;
-import uysal.iddaa.iddaaDb.service.TeamRepository;
+import uysal.iddaa.iddaaDb.models.team.Team;
+import uysal.iddaa.iddaaDb.services.team.TeamService;
 
 @RestController
 public class TeamController {
 
 	@Autowired
-	private TeamRepository teamRepository;
+	private TeamService teamService;
 
 	@GetMapping(value = "/teams")
 	public List<Object> getLeagues() {
-		return teamRepository.findAllTeamSumarry();
+		return teamService.findAllTeamSumarry();
 	}
 
 	@GetMapping(value = "/team/{id}")
 	public Team getLeagueById(@PathVariable Long id) {
-		return teamRepository.findById(id).get();
+		return teamService.findById(id).get();
 	}
 
 	@GetMapping(value = "/teamName/{name}")
 	public Team getLeagueByName(@PathVariable String name) {
-		return teamRepository.findByName(name);
+		return teamService.findByName(name);
 	}
 }

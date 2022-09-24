@@ -1,8 +1,13 @@
-package uysal.iddaa.iddaaDb.model;
+package uysal.iddaa.iddaaDb.models.matchdetail;
 
 import java.util.Date;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import uysal.iddaa.iddaaDb.models.matchresult.MatchResult;
+import uysal.iddaa.iddaaDb.models.team.Team;
 
 @Entity
 @Table(name = "match_datail")
@@ -13,10 +18,12 @@ public class MatchDetail {
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "home_id")
+	@JsonIgnoreProperties(value = { "homeMatches", "awayMatches" })
 	private Team home;
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "away_id")
+	@JsonIgnoreProperties(value = { "homeMatches", "awayMatches" })
 	private Team away;
 
 	@OneToOne(mappedBy = "match_detail", cascade = CascadeType.ALL)

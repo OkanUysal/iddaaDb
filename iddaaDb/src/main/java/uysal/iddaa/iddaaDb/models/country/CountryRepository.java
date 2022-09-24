@@ -1,8 +1,6 @@
-package uysal.iddaa.iddaaDb.service;
+package uysal.iddaa.iddaaDb.models.country;
 
 import org.springframework.stereotype.Repository;
-
-import uysal.iddaa.iddaaDb.model.Country;
 
 import java.util.List;
 import java.util.Optional;
