@@ -30,4 +30,9 @@ public class TeamServiceImp implements TeamService {
 		return teamRepository.findByName(name);
 	}
 
+	@Override
+	public Team addNewTeam(Team team) {
+		return teamRepository.save(team);
+	}
+
 }
