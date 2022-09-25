@@ -1,6 +1,5 @@
 package uysal.iddaa.iddaaDb.models.matchresult;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -12,34 +11,47 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetail;
 
-
-
 @Entity
 @Table(name = "match_result")
 public class MatchResult {
-	
+
 	@Id
-    @Column(name = "match_id")
-    private Long id;
-	
-	
+	private Long id;
+
 	@OneToOne
 	@MapsId
 	@JsonIgnoreProperties(value = { "match_result" })
-	@JoinColumn(name = "match_id")
+	@JoinColumn(name = "id")
 	private MatchDetail match_detail;
-	
+
 	private float rate_1;
-	
+
 	private float rate_0;
-	
+
 	private float rate_2;
-	
+
 	private float percentage_1;
-	
+
 	private float percentage_0;
-	
+
 	private float percentage_2;
+
+	public MatchResult() {
+		super();
+	}
+
+	public MatchResult(Long id, MatchDetail match_detail, float rate_1, float rate_0, float rate_2, float percentage_1,
+			float percentage_0, float percentage_2) {
+		super();
+		this.id = id;
+		this.match_detail = match_detail;
+		this.rate_1 = rate_1;
+		this.rate_0 = rate_0;
+		this.rate_2 = rate_2;
+		this.percentage_1 = percentage_1;
+		this.percentage_0 = percentage_0;
+		this.percentage_2 = percentage_2;
+	}
 
 	public Long getId() {
 		return id;

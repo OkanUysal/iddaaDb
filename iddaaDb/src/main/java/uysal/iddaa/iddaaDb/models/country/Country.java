@@ -18,8 +18,7 @@ public class Country {
 	private String name;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "country", cascade = CascadeType.ALL)
-//	@JsonManagedReference
-	@JsonIgnoreProperties(value = { "country", "teams" })
+	@JsonIgnoreProperties(value = { "country", "seasons" })
 	private Set<League> leagues;
 
 	public Country() {
