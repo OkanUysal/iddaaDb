@@ -11,14 +11,14 @@ import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetailRepository;
 import uysal.iddaa.iddaaDb.services.team.TeamService;
 
 @Service
-public class MatchDetailServiceImp implements MatchDetailService{
+public class MatchDetailServiceImp implements MatchDetailService {
 
 	@Autowired
 	private MatchDetailRepository matchDetailRepository;
-	
+
 	@Autowired
 	private TeamService teamService;
-	
+
 	@Override
 	public List<Object> findAllMatchDetailSumarry() {
 		return matchDetailRepository.findAllMatchDetailSumarry();
