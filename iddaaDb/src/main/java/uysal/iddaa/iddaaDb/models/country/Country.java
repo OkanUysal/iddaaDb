@@ -5,20 +5,25 @@ import java.util.Set;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import uysal.iddaa.iddaaDb.models.leaugue.League;
+import uysal.iddaa.iddaaDb.utils.View;
 
 @Entity
 @Table(name = "Contry")
 public class Country {
 
 	@Id
+	@JsonView(View.Public.class)
 	private Long id;
 
+	@JsonView(View.Public.class)
 	private String name;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "country", cascade = CascadeType.ALL)
 	@JsonIgnoreProperties(value = { "country", "seasons" })
+	@JsonView(View.Internal.class)
 	private Set<League> leagues;
 
 	public Country() {

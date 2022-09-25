@@ -12,26 +12,32 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import uysal.iddaa.iddaaDb.models.leaugue.League;
 import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetail;
+import uysal.iddaa.iddaaDb.utils.View;
 
 @Entity
 @Table(name = "season")
 public class Season {
 
 	@Id
+	@JsonView(View.Public.class)
 	private Long id;
 
+	@JsonView(View.Public.class)
 	private String name;
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "league_id")
 	@JsonIgnoreProperties(value = { "seasons" })
+	@JsonView(View.Public.class)
 	private League league;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "season", cascade = CascadeType.ALL)
 	@JsonIgnoreProperties(value = { "home", "away" })
+	@JsonView(View.Internal.class)
 	private Set<MatchDetail> matchDetails;
 
 	public Season() {

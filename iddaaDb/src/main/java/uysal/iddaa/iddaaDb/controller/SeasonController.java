@@ -14,40 +14,35 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-import uysal.iddaa.iddaaDb.models.leaugue.League;
-import uysal.iddaa.iddaaDb.services.league.LeagueService;
+import uysal.iddaa.iddaaDb.models.season.Season;
+import uysal.iddaa.iddaaDb.services.season.SeasonService;
 import uysal.iddaa.iddaaDb.utils.View;
 
 @RestController
-public class LeagueController {
-
+public class SeasonController {
+	
 	@Autowired
-	private LeagueService leagueService;
-
-	@GetMapping(value = "/leagues")
+	private SeasonService seasonService;
+	
+	@GetMapping(value = "/seasons")
 	@JsonView(View.Public.class)
-	public List<League> getLeagues() {
-		return leagueService.findAll();
-	}
-
-	@GetMapping(value = "/league/{id}")
-	@JsonView(View.Internal.class)
-	public League getLeagueById(@PathVariable Long id) {
-		return leagueService.findById(id).get();
-	}
-
-	@GetMapping(value = "/leagueName/{name}")
-	@JsonView(View.Internal.class)
-	public League getLeagueByName(@PathVariable String name) {
-		return leagueService.findByName(name);
+	public List<Season> getSeasons() {
+		return seasonService.findAll();
 	}
 	
-	@PostMapping(value = "addLeague")
-	public League addNewLeague(@RequestBody League league) {
-		Optional<League> check = leagueService.findById(league.getId());
+	@GetMapping(value = "/season/{id}")
+	@JsonView(View.Internal.class)
+	public Season getSeason(@PathVariable Long id) {
+		return seasonService.findById(id).get();
+	}
+	
+	@PostMapping(value = "addSeason")
+	public Season addNewLeague(@RequestBody Season season) {
+		Optional<Season> check = seasonService.findById(season.getId());
 		if(check.isPresent()) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "League already exists!");
 		}
-		return leagueService.addNewLeague(league);
+		return seasonService.addNewSeason(season);
 	}
+
 }

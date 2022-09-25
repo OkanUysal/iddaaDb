@@ -5,45 +5,57 @@ import java.util.Date;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import uysal.iddaa.iddaaDb.models.matchresult.MatchResult;
 import uysal.iddaa.iddaaDb.models.season.Season;
 import uysal.iddaa.iddaaDb.models.team.Team;
+import uysal.iddaa.iddaaDb.utils.View;
 
 @Entity
 @Table(name = "match_datail")
 public class MatchDetail {
 
 	@Id
+	@JsonView(View.Public.class)
 	private Long id;
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "home_id")
 	@JsonIgnoreProperties(value = { "homeMatches", "awayMatches" })
+	@JsonView(View.Public.class)
 	private Team home;
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "away_id")
 	@JsonIgnoreProperties(value = { "homeMatches", "awayMatches" })
+	@JsonView(View.Public.class)
 	private Team away;
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "season_id")
 	@JsonIgnoreProperties(value = { "matchDetails" })
+	@JsonView(View.Public.class)
 	private Season season;
 
 	@OneToOne(mappedBy = "match_detail", cascade = CascadeType.ALL)
 	@PrimaryKeyJoinColumn
+	@JsonView(View.Internal.class)
 	private MatchResult match_result;
 
+	@JsonView(View.Internal.class)
 	private int home_half_time_score;
 
+	@JsonView(View.Internal.class)
 	private int away_half_time_score;
 
+	@JsonView(View.Public.class)
 	private int home_match_score;
 
+	@JsonView(View.Public.class)
 	private int away_match_score;
 
+	@JsonView(View.Public.class)
 	private Date date;
 
 	public MatchDetail() {
