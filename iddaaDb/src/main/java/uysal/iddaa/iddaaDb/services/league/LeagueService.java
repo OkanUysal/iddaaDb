@@ -13,4 +13,6 @@ public interface LeagueService {
 	League findByName(String name);
 	
 	League addNewLeague(League league);
+	
+	List<League> findAll();
 }

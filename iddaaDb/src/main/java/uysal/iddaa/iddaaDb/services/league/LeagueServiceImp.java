@@ -40,4 +40,9 @@ public class LeagueServiceImp implements LeagueService {
 		return leagueRepository.save(league);
 	}
 
+	@Override
+	public List<League> findAll() {
+		return leagueRepository.findAll();
+	}
+
 }

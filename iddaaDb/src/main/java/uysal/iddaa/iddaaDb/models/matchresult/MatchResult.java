@@ -8,14 +8,18 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetail;
+import uysal.iddaa.iddaaDb.utils.View;
 
 @Entity
 @Table(name = "match_result")
+@JsonView(View.Public.class)
 public class MatchResult {
 
 	@Id
+	@JsonView(View.Public.class)
 	private Long id;
 
 	@OneToOne

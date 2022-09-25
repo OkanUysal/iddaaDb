@@ -5,24 +5,30 @@ import java.util.Set;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetail;
+import uysal.iddaa.iddaaDb.utils.View;
 
 @Entity
 @Table(name = "Team")
 public class Team {
 
 	@Id
+	@JsonView(View.Public.class)
 	private Long id;
 
+	@JsonView(View.Public.class)
 	private String name;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "home", cascade = CascadeType.ALL)
 	@JsonIgnoreProperties(value = { "match_result" })
+	@JsonView(View.Internal.class)
 	private Set<MatchDetail> homeMatches;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "away", cascade = CascadeType.ALL)
 	@JsonIgnoreProperties(value = { "match_result" })
+	@JsonView(View.Internal.class)
 	private Set<MatchDetail> awayMatches;
 
 	public Team() {
