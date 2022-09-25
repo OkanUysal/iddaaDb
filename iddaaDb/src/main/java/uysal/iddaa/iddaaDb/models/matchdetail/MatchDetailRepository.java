@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MatchDetailRepository extends JpaRepository<MatchDetail, Long> {
 
-	@Query("select md.id, md.home.id, md.home.name, md.away.id, md.away.name, md.home_half_time_score, md.away_half_time_score, md.home_match_score, md.away_match_score, md.season, md.date from MatchDetail md")
+	@Query("select md.id, md.home_half_time_score, md.away_half_time_score, md.home_match_score, md.away_match_score, md.season, md.date from MatchDetail md")
 	List<Object> findAllMatchDetailSumarry();
 	
 	Optional<MatchDetail> findById(Long id);

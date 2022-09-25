@@ -7,6 +7,7 @@ import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import uysal.iddaa.iddaaDb.models.matchresult.MatchResult;
+import uysal.iddaa.iddaaDb.models.season.Season;
 import uysal.iddaa.iddaaDb.models.team.Team;
 
 @Entity
@@ -26,9 +27,14 @@ public class MatchDetail {
 	@JsonIgnoreProperties(value = { "homeMatches", "awayMatches" })
 	private Team away;
 
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "season_id")
+	@JsonIgnoreProperties(value = { "matchDetails" })
+	private Season season;
+
 	@OneToOne(mappedBy = "match_detail", cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
-    private MatchResult match_result;
+	@PrimaryKeyJoinColumn
+	private MatchResult match_result;
 
 	private int home_half_time_score;
 
@@ -38,25 +44,24 @@ public class MatchDetail {
 
 	private int away_match_score;
 
-	private String season;
-
 	private Date date;
 
 	public MatchDetail() {
 		super();
 	}
 
-	public MatchDetail(Long id, Team home, Team away, int home_half_time_score, int away_half_time_score,
-			int home_match_score, int away_match_score, String season, Date date) {
+	public MatchDetail(Long id, Team home, Team away, Season season, MatchResult match_result, int home_half_time_score,
+			int away_half_time_score, int home_match_score, int away_match_score, Date date) {
 		super();
 		this.id = id;
 		this.home = home;
 		this.away = away;
+		this.season = season;
+		this.match_result = match_result;
 		this.home_half_time_score = home_half_time_score;
 		this.away_half_time_score = away_half_time_score;
 		this.home_match_score = home_match_score;
 		this.away_match_score = away_match_score;
-		this.season = season;
 		this.date = date;
 	}
 
@@ -83,7 +88,15 @@ public class MatchDetail {
 	public void setAway(Team away) {
 		this.away = away;
 	}
-	
+
+	public Season getSeason() {
+		return season;
+	}
+
+	public void setSeason(Season season) {
+		this.season = season;
+	}
+
 	public MatchResult getMatch_result() {
 		return match_result;
 	}
@@ -124,14 +137,6 @@ public class MatchDetail {
 		this.away_match_score = away_match_score;
 	}
 
-	public String getSeason() {
-		return season;
-	}
-
-	public void setSeason(String season) {
-		this.season = season;
-	}
-
 	public Date getDate() {
 		return date;
 	}
@@ -139,7 +144,5 @@ public class MatchDetail {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	
-	
 
 }
