@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -55,7 +56,8 @@ public class MatchDetail {
 	@JsonView(View.Public.class)
 	private int away_match_score;
 
-	@JsonView(View.Public.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
+	@JsonView(View.Public.class)	
 	private Date date;
 
 	public MatchDetail() {
