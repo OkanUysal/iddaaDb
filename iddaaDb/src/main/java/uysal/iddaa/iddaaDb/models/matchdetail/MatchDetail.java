@@ -1,6 +1,7 @@
 package uysal.iddaa.iddaaDb.models.matchdetail;
 
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.*;
 
@@ -11,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import uysal.iddaa.iddaaDb.models.matchresult.MatchResult;
 import uysal.iddaa.iddaaDb.models.season.Season;
 import uysal.iddaa.iddaaDb.models.team.Team;
+import uysal.iddaa.iddaaDb.models.underover.UnderOver;
 import uysal.iddaa.iddaaDb.utils.View;
 
 @Entity
@@ -43,6 +45,11 @@ public class MatchDetail {
 	@PrimaryKeyJoinColumn
 	@JsonView(View.Internal.class)
 	private MatchResult match_result;
+	
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "match_detail", cascade = CascadeType.ALL)
+	@JsonIgnoreProperties(value = {"match_detail"})
+	@JsonView(View.Internal.class)
+	private Set<UnderOver> under_over;
 
 	@JsonView(View.Internal.class)
 	private int home_half_time_score;

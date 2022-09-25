@@ -1,5 +1,6 @@
 package uysal.iddaa.iddaaDb.models.matchresult;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -22,7 +23,7 @@ public class MatchResult {
 	@JsonView(View.Public.class)
 	private Long id;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	@MapsId
 	@JsonIgnoreProperties(value = { "match_result" })
 	@JoinColumn(name = "id")
