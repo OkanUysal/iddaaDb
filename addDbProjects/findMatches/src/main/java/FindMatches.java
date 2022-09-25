@@ -1,8 +1,14 @@
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import org.jsoup.Jsoup;
 
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.internal.LinkedTreeMap;
 
 public class FindMatches {
@@ -21,20 +27,30 @@ public class FindMatches {
 		try {
 			String result = Jsoup.connect("https://goapi.mackolik.com/livedata?date=" + date).get().select("body")
 					.text();
-
-			GsonBuilder builder = new GsonBuilder();
-			Object obj = builder.create().fromJson(result, Object.class);
-
-			@SuppressWarnings("unchecked")
-			LinkedTreeMap<String, Object> linkedTreeMap = (LinkedTreeMap<String, Object>) obj;
-
-			@SuppressWarnings("unchecked")
-			ArrayList<Object> matches = (ArrayList<Object>) linkedTreeMap.get("m");
-
+			
+			JsonObject json = new JsonParser().parse(result).getAsJsonObject();
+			
+			JsonArray matches = json.get("m").getAsJsonArray();
+			
 			matches.forEach((n) -> {
-				@SuppressWarnings("unchecked")
-				ArrayList<Object> t = (ArrayList<Object>) n;
-				System.out.println(((Double) t.get(0)).intValue() + ": " + t.get(2) + "-" + t.get(4));
+				JsonArray match = n.getAsJsonArray();
+				if(match.get(5).getAsInt() == 4 && !match.get(6).getAsString().equals("Ert.")) { // Is a football match and Is a cancel?					
+//					System.out.println(match.get(0).getAsInt() + ": " + match.get(2).getAsString() + "-" + match.get(4).getAsString());
+					
+					try {
+						DbInfo dbInfo = new DbInfo(match.get(36).getAsJsonArray().get(0).getAsInt(),
+								match.get(36).getAsJsonArray().get(1).getAsString(), match.get(36).getAsJsonArray().get(2).getAsInt(),
+								match.get(36).getAsJsonArray().get(3).getAsString(), match.get(36).getAsJsonArray().get(4).getAsInt(),
+								match.get(36).getAsJsonArray().get(5).getAsString(), match.get(0).getAsInt(), match.get(1).getAsInt(),
+								match.get(2).getAsString(), match.get(3).getAsInt(), match.get(4).getAsString(), match.get(29).getAsInt(),
+								match.get(30).getAsInt(), match.get(31).getAsInt(), match.get(32).getAsInt(),
+								match.get(35).getAsString() + " " + match.get(16).getAsString());
+						dbInfo.addDb();
+//						System.exit(0);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
 			});
 
 		} catch (Exception e) {
@@ -42,5 +58,6 @@ public class FindMatches {
 		}
 
 	}
+	
 
 }
