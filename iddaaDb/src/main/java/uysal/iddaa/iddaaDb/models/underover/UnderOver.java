@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetail;
 import uysal.iddaa.iddaaDb.utils.View;
@@ -16,18 +17,20 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 
 @Entity
-@Table(name = "under_over")
+@Table(name = "under_over", uniqueConstraints = {@UniqueConstraint(columnNames = {"match_detail_id", "underOverNum"})})
 @JsonView(View.Public.class)
 public class UnderOver {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-
+	
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "match_detail_id")
 	@JsonIgnoreProperties(value = { "under_over" })
 	private MatchDetail match_detail;
+	
+	private float underOverNum;
 
 	private float underRatio;
 
@@ -37,7 +40,7 @@ public class UnderOver {
 
 	private float overRatio;
 
-	private float underOverNum;
+
 
 	public UnderOver() {
 		super();
@@ -51,6 +54,7 @@ public class UnderOver {
 		this.overRatio = overRatio;
 		this.underOverNum = underOverNum;
 	}
+
 
 	public Long getId() {
 		return id;
