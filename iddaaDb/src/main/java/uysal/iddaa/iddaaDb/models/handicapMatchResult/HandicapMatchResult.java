@@ -34,13 +34,13 @@ public class HandicapMatchResult {
 
 	private float handicapRate1;
 
-	private float handicapRate0;
+	private float handicapRateX;
 
 	private float handicapRate2;
 
 	private float handicapRatePercentage1;
 
-	private float handicapRatePercentage0;
+	private float handicapRatePercentageX;
 
 	private float handicapRatePercentage2;
 
@@ -56,10 +56,10 @@ public class HandicapMatchResult {
 		this.matchDetail = matchDetail;
 		this.handicapNum = handicapNum;
 		this.handicapRate1 = handicapRate1;
-		this.handicapRate0 = handicapRate0;
+		this.handicapRateX = handicapRate0;
 		this.handicapRate2 = handicapRate2;
 		this.handicapRatePercentage1 = handicapRatePercentage1;
-		this.handicapRatePercentage0 = handicapRatePercentage0;
+		this.handicapRatePercentageX = handicapRatePercentage0;
 		this.handicapRatePercentage2 = handicapRatePercentage2;
 	}
 
@@ -96,11 +96,11 @@ public class HandicapMatchResult {
 	}
 
 	public float getHandicapRate0() {
-		return handicapRate0;
+		return handicapRateX;
 	}
 
 	public void setHandicapRate0(int handicapRate0) {
-		this.handicapRate0 = handicapRate0;
+		this.handicapRateX = handicapRate0;
 	}
 
 	public float getHandicapRate2() {
@@ -120,11 +120,11 @@ public class HandicapMatchResult {
 	}
 
 	public float getHandicapRatePercentage0() {
-		return handicapRatePercentage0;
+		return handicapRatePercentageX;
 	}
 
 	public void setHandicapRatePercentage0(float handicapRatePercentage0) {
-		this.handicapRatePercentage0 = handicapRatePercentage0;
+		this.handicapRatePercentageX = handicapRatePercentage0;
 	}
 
 	public float getHandicapRatePercentage2() {
