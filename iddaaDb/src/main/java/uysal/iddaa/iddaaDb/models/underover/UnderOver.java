@@ -32,13 +32,13 @@ public class UnderOver {
 	
 	private float underOverNum;
 
-	private float underRatio;
+	private float underRate;
 
 	private float underPercentage;
 
 	private float overPercentage;
 
-	private float overRatio;
+	private float overRate;
 
 
 
@@ -50,8 +50,8 @@ public class UnderOver {
 		super();
 		this.id = id;
 		this.match_detail = match_detail;
-		this.underRatio = underRatio;
-		this.overRatio = overRatio;
+		this.underRate = underRatio;
+		this.overRate = overRatio;
 		this.underOverNum = underOverNum;
 	}
 
@@ -73,11 +73,11 @@ public class UnderOver {
 	}
 
 	public float getUnderRatio() {
-		return underRatio;
+		return underRate;
 	}
 
 	public void setUnderRatio(float underRatio) {
-		this.underRatio = underRatio;
+		this.underRate = underRatio;
 	}
 
 	public float getUnderPercentage() {
@@ -97,11 +97,11 @@ public class UnderOver {
 	}
 
 	public float getOverRatio() {
-		return overRatio;
+		return overRate;
 	}
 
 	public void setOverRatio(float overRatio) {
-		this.overRatio = overRatio;
+		this.overRate = overRatio;
 	}
 
 	public float getUnderOverNum() {
