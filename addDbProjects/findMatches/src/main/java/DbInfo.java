@@ -3,7 +3,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Date;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
 import com.google.gson.JsonObject;
 
@@ -53,7 +56,7 @@ public class DbInfo {
 		JsonObject country = new JsonObject();
 		country.addProperty("id", this.countryId);
 		country.addProperty("name", this.countryName);
-		sendPost("http://localhost:8080/addCountry", country.toString());
+		sendPost("http://localhost:8080/addCountry", country.toString(), false, true);
 //		System.out.println(country.toString());
 
 		// add league
@@ -61,7 +64,7 @@ public class DbInfo {
 		league.addProperty("id", this.leaugeId);
 		league.addProperty("name", this.leagueName);
 		league.add("country", country);
-		sendPost("http://localhost:8080/addLeague", league.toString());
+		sendPost("http://localhost:8080/addLeague", league.toString(), false, true);
 //		System.out.println(league.toString());
 
 		// add season
@@ -69,19 +72,19 @@ public class DbInfo {
 		season.addProperty("id", this.seasonId);
 		season.addProperty("name", this.seasonName);
 		season.add("league", league);
-		sendPost("http://localhost:8080/addSeason", season.toString());
+		sendPost("http://localhost:8080/addSeason", season.toString(), false, true);
 
 		// add home team
 		JsonObject homeTeam = new JsonObject();
 		homeTeam.addProperty("id", this.homeTeamId);
 		homeTeam.addProperty("name", this.homeTeamName);
-		sendPost("http://localhost:8080/addTeam", homeTeam.toString());
+		sendPost("http://localhost:8080/addTeam", homeTeam.toString(), false, true);
 
 		// add home team
 		JsonObject awayTeam = new JsonObject();
 		awayTeam.addProperty("id", this.awayTeamId);
 		awayTeam.addProperty("name", this.awayTeamName);
-		sendPost("http://localhost:8080/addTeam", awayTeam.toString());
+		sendPost("http://localhost:8080/addTeam", awayTeam.toString(), false, true);
 
 		// add home team
 		JsonObject matchDetail = new JsonObject();
@@ -94,11 +97,103 @@ public class DbInfo {
 		matchDetail.addProperty("home_match_score", this.homeScore);
 		matchDetail.addProperty("away_match_score", this.awayScore);
 		matchDetail.addProperty("date", this.date);
-		sendPost("http://localhost:8080/addMatchDetail", matchDetail.toString());
+		sendPost("http://localhost:8080/addMatchDetail", matchDetail.toString(), false, true);
+
+		getBetDetails();
 
 	}
 
-	private static void sendPost(String uri, String json) {
+	private void getBetDetails() {
+		try {
+			Document doc = Jsoup.connect("http://arsiv.mackolik.com/Match/Default.aspx?id=" + matchId).get();
+
+			Elements betsTable = doc.select("div#compare-left-coll");
+
+			Elements bets = betsTable.get(0).select("div.md");
+
+			bets.forEach((b) -> {
+				String text = b.select("div.detail-title").get(0).text();
+				if ((text.startsWith("Maç Sonucu") && !text.startsWith("Maç Sonucu ve"))
+						|| text.startsWith("Handikaplı Maç Sonucu")) {
+					getHandicapMatchResult(text.substring(0, text.lastIndexOf(" ")), b.select("div.sgoutcome-name"),
+							b.select("div.sgoutcome-value"));
+//					System.exit(0);
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void getHandicapMatchResult(String betName, Elements betNames, Elements betValues) {
+		int handicap = 0;
+		float ms1 = 1;
+		float msx = 1;
+		float ms2 = 1;
+		float ms1p = 0;
+		float msxp = 0;
+		float ms2p = 0;
+		float totalp = 0;
+		
+		if(betName.equals("Maç Sonucu")) {
+			handicap = 0;
+		} else {
+			handicap = Integer.valueOf(betName.split("[():]")[1]) - Integer.valueOf(betName.split("[():]")[2]);
+		}
+		
+		for(int i = 0; i < betNames.size(); i++) {
+			if(betNames.get(i).text().equals("1")) {
+				try {
+					ms1 = Float.valueOf(betValues.get(i).text());
+				} catch (Exception e) {}
+			} else if(betNames.get(i).text().equals("X")) {
+				try {
+					msx = Float.valueOf(betValues.get(i).text());
+				} catch (Exception e) {}
+			} else if(betNames.get(i).text().equals("2")) {
+				try {
+					ms2 = Float.valueOf(betValues.get(i).text());
+				} catch (Exception e) {}
+			}
+		}
+		
+		ms1p = 1 / ms1 * 100;
+		msxp = 1 / msx * 100;
+		ms2p = 1 / ms2 * 100;
+		
+		totalp = ms1p + msxp + ms2p;
+		
+		ms1p = ms1p / totalp * 100;
+		msxp = msxp / totalp * 100;
+		ms2p = ms2p / totalp * 100;
+		
+		JsonObject matchResult = new JsonObject();
+		matchResult.addProperty("handicapNum", handicap);
+		matchResult.addProperty("handicapRate1", ms1);
+		matchResult.addProperty("handicapRateX", msx);
+		matchResult.addProperty("handicapRate2", ms2);
+		matchResult.addProperty("handicapPercentage1", ms1p);
+		matchResult.addProperty("handicapPercentageX", msxp);
+		matchResult.addProperty("handicapPercentage2", ms2p);
+		
+		JsonObject matchDetail = new JsonObject();
+		matchDetail.addProperty("id", matchId);
+		
+		matchResult.add("matchDetail", matchDetail);
+		
+		sendPost("http://localhost:8080/addHandicapMatchResult", matchResult.toString(), true, true);
+		
+		
+//		System.out.println(handicap);
+//		
+//		System.out.println(betName);
+//		System.out.println(betNames.text());
+//		System.out.println(betValues.text());
+	}
+
+	private static void sendPost(String uri, String json, boolean checkException, boolean addDb) {
+		if (!addDb)
+			return;
 		System.out.println(json);
 		try {
 			URL url = new URL(uri);
@@ -125,7 +220,8 @@ public class DbInfo {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			if (checkException)
+				e.printStackTrace();
 		}
 	}
 
