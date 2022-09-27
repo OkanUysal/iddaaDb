@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 
-import uysal.iddaa.iddaaDb.models.matchresult.MatchResult;
+import uysal.iddaa.iddaaDb.models.handicapMatchResult.HandicapMatchResult;
 import uysal.iddaa.iddaaDb.models.season.Season;
 import uysal.iddaa.iddaaDb.models.team.Team;
 import uysal.iddaa.iddaaDb.models.underover.UnderOver;
@@ -40,16 +40,16 @@ public class MatchDetail {
 	@JsonIgnoreProperties(value = { "matchDetails" })
 	@JsonView(View.Public.class)
 	private Season season;
-
-	@OneToOne(mappedBy = "match_detail", cascade = CascadeType.ALL)
-	@PrimaryKeyJoinColumn
-	@JsonView(View.Internal.class)
-	private MatchResult match_result;
 	
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "match_detail", cascade = CascadeType.ALL)
 	@JsonIgnoreProperties(value = {"match_detail"})
 	@JsonView(View.Internal.class)
 	private Set<UnderOver> under_over;
+	
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "matchDetail", cascade = CascadeType.ALL)
+	@JsonIgnoreProperties(value = {"matchDetail"})
+	@JsonView(View.Internal.class)
+	private Set<HandicapMatchResult> handicap;
 
 	@JsonView(View.Internal.class)
 	private int home_half_time_score;
@@ -71,14 +71,13 @@ public class MatchDetail {
 		super();
 	}
 
-	public MatchDetail(Long id, Team home, Team away, Season season, MatchResult match_result, int home_half_time_score,
+	public MatchDetail(Long id, Team home, Team away, Season season, int home_half_time_score,
 			int away_half_time_score, int home_match_score, int away_match_score, Date date) {
 		super();
 		this.id = id;
 		this.home = home;
 		this.away = away;
 		this.season = season;
-		this.match_result = match_result;
 		this.home_half_time_score = home_half_time_score;
 		this.away_half_time_score = away_half_time_score;
 		this.home_match_score = home_match_score;
@@ -116,14 +115,6 @@ public class MatchDetail {
 
 	public void setSeason(Season season) {
 		this.season = season;
-	}
-
-	public MatchResult getMatch_result() {
-		return match_result;
-	}
-
-	public void setMatch_result(MatchResult match_result) {
-		this.match_result = match_result;
 	}
 
 	public int getHome_half_time_score() {
