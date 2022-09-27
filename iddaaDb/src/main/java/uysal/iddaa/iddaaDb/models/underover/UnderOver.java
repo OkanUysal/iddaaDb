@@ -46,15 +46,18 @@ public class UnderOver {
 		super();
 	}
 
-	public UnderOver(Long id, MatchDetail match_detail, float underRatio, float overRatio, float underOverNum) {
+
+	public UnderOver(Long id, MatchDetail match_detail, float underOverNum, float underRate, float underPercentage,
+			float overPercentage, float overRate) {
 		super();
 		this.id = id;
 		this.match_detail = match_detail;
-		this.underRate = underRatio;
-		this.overRate = overRatio;
 		this.underOverNum = underOverNum;
+		this.underRate = underRate;
+		this.underPercentage = underPercentage;
+		this.overPercentage = overPercentage;
+		this.overRate = overRate;
 	}
-
 
 	public Long getId() {
 		return id;
@@ -72,12 +75,12 @@ public class UnderOver {
 		this.match_detail = match_detail;
 	}
 
-	public float getUnderRatio() {
+	public float getUnderRate() {
 		return underRate;
 	}
 
-	public void setUnderRatio(float underRatio) {
-		this.underRate = underRatio;
+	public void setUnderRatio(float underRate) {
+		this.underRate = underRate;
 	}
 
 	public float getUnderPercentage() {
@@ -96,12 +99,12 @@ public class UnderOver {
 		this.overPercentage = overPercentage;
 	}
 
-	public float getOverRatio() {
+	public float getOverRate() {
 		return overRate;
 	}
 
-	public void setOverRatio(float overRatio) {
-		this.overRate = overRatio;
+	public void setOverRate(float overRate) {
+		this.overRate = overRate;
 	}
 
 	public float getUnderOverNum() {

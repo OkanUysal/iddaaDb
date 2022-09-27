@@ -87,52 +87,52 @@ public class HandicapMatchResult {
 		this.handicapNum = handicapNum;
 	}
 
-	public float getHandicapRate1() {
+	public float gethandicapRate1() {
 		return handicapRate1;
 	}
 
-	public void setHandicapRate1(int handicapRate1) {
+	public void setHandicapRate1(float handicapRate1) {
 		this.handicapRate1 = handicapRate1;
 	}
 
-	public float getHandicapRate0() {
+	public float gethandicapRateX() {
 		return handicapRateX;
 	}
 
-	public void setHandicapRate0(int handicapRate0) {
-		this.handicapRateX = handicapRate0;
+	public void sethandicapRateX(float handicapRateX) {
+		this.handicapRateX = handicapRateX;
 	}
 
-	public float getHandicapRate2() {
+	public float gethandicapRate2() {
 		return handicapRate2;
 	}
 
-	public void setHandicapRate2(int handicapRate2) {
+	public void sethandicapRate2(float handicapRate2) {
 		this.handicapRate2 = handicapRate2;
 	}
 
-	public float getHandicapRatePercentage1() {
+	public float gethandicapPercentage1() {
 		return handicapPercentage1;
 	}
 
-	public void setHandicapRatePercentage1(float handicapRatePercentage1) {
-		this.handicapPercentage1 = handicapRatePercentage1;
+	public void sethandicapPercentage1(float handicapPercentage1) {
+		this.handicapPercentage1 = handicapPercentage1;
 	}
 
-	public float getHandicapRatePercentage0() {
+	public float gethandicapPercentageX() {
 		return handicapPercentageX;
 	}
 
-	public void setHandicapRatePercentage0(float handicapRatePercentage0) {
-		this.handicapPercentageX = handicapRatePercentage0;
+	public void sethandicapPercentageX(float handicapPercentageX) {
+		this.handicapPercentageX = handicapPercentageX;
 	}
 
-	public float getHandicapRatePercentage2() {
+	public float gethandicapPercentage2() {
 		return handicapPercentage2;
 	}
 
-	public void setHandicapRatePercentage2(float handicapRatePercentage2) {
-		this.handicapPercentage2 = handicapRatePercentage2;
+	public void sethandicapPercentage2(float handicapPercentage2) {
+		this.handicapPercentage2 = handicapPercentage2;
 	}
 
 }
