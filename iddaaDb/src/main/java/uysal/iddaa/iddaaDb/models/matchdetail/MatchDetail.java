@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 
+import uysal.iddaa.iddaaDb.models.goalRange.GoalRange;
 import uysal.iddaa.iddaaDb.models.handicapMatchResult.HandicapMatchResult;
 import uysal.iddaa.iddaaDb.models.season.Season;
 import uysal.iddaa.iddaaDb.models.team.Team;
@@ -50,6 +51,11 @@ public class MatchDetail {
 	@JsonIgnoreProperties(value = {"matchDetail"})
 	@JsonView(View.Internal.class)
 	private Set<HandicapMatchResult> handicap;
+	
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "matchDetail", cascade = CascadeType.ALL)
+	@JsonIgnoreProperties(value = {"matchDetail"})
+	@JsonView(View.Internal.class)
+	private Set<GoalRange> goalRange;
 
 	@JsonView(View.Internal.class)
 	private int home_half_time_score;
