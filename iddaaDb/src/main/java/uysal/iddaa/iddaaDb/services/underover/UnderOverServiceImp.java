@@ -25,7 +25,7 @@ public class UnderOverServiceImp implements UnderOverService{
 
 	@Override
 	public UnderOver save(UnderOver underOver) {
-		underOver.setMatch_detail(matchDetailService.findById(underOver.getMatch_detail().getId()).get());
+		underOver.setMatchDetail(matchDetailService.findById(underOver.getMatchDetail().getId()).get());
 		return underOverRepository.save(underOver);
 	}
 

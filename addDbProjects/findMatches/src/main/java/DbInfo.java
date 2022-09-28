@@ -1,14 +1,7 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -143,6 +136,11 @@ public class DbInfo {
 							b.select("div.sgoutcome-value"), matchDetails);
 //					System.exit(0);
 				}
+				if ((text.contains("Alt/Üst") && text.substring(0, text.lastIndexOf(" ")).length() < 14)) {
+					getUnderOverResult(text.substring(0, text.lastIndexOf(" ")), b.select("div.sgoutcome-name"),
+							b.select("div.sgoutcome-value"), matchDetails);
+//					System.exit(0);
+				}
 			});
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -220,6 +218,64 @@ public class DbInfo {
 		matchResult.add("matchDetail", matchDetail);
 
 		Utils.sendPost("http://localhost:8080/addHandicapMatchResult", matchResult.toString());
+	}
+	
+	private void getUnderOverResult(String betName, Elements betNames, Elements betValues, String matchDetails) {
+		float underOverNum = 0;
+		float under = 1;
+		float over = 1;
+		float underp = 0;
+		float overp = 0;
+		float totalp = 0;
+
+		underOverNum = Float.valueOf(betName.trim().split(" ")[0].replace(",", "."));
+		
+		if (!matchDetails.equals("")) {
+			JsonObject matchResults = new JsonParser().parse(matchDetails).getAsJsonObject();
+
+			for (int i = 0; i < matchResults.get("under_over").getAsJsonArray().size(); i++) {
+				if (matchResults.get("under_over").getAsJsonArray().get(i).getAsJsonObject().get("underOverNum")
+						.getAsFloat() == underOverNum) {
+					return;
+				}
+			}
+		}
+
+		for (int i = 0; i < betNames.size(); i++) {
+			if (betNames.get(i).text().equals("Alt")) {
+				try {
+					under = Float.valueOf(betValues.get(i).text());
+				} catch (Exception e) {
+				}
+			} else if (betNames.get(i).text().equals("Üst")) {
+				try {
+					over = Float.valueOf(betValues.get(i).text());
+				} catch (Exception e) {
+				}
+			}
+		}
+
+		underp = 1 / under * 100;
+		overp = 1 / over * 100;
+
+		totalp = underp + overp;
+
+		underp = underp / totalp * 100;
+		overp = overp / totalp * 100;
+
+		JsonObject underOver = new JsonObject();
+		underOver.addProperty("underOverNum", underOverNum);
+		underOver.addProperty("underRate", under);
+		underOver.addProperty("underPercentage", underp);
+		underOver.addProperty("overRate", over);
+		underOver.addProperty("overPercentage", overp);
+
+		JsonObject matchDetail = new JsonObject();
+		matchDetail.addProperty("id", matchId);
+
+		underOver.add("matchDetail", matchDetail);
+
+		Utils.sendPost("http://localhost:8080/addUnderOver", underOver.toString());
 	}
 
 }

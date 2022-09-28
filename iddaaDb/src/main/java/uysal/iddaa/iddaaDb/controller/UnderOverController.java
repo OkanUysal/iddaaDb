@@ -20,7 +20,7 @@ public class UnderOverController {
 	
 	@PostMapping(value = "/addUnderOver")
 	public UnderOver addNewCountry(@RequestBody UnderOver underOver) {
-		Optional<UnderOver> check = underOverService.findById(underOver.getMatch_detail().getId());
+		Optional<UnderOver> check = underOverService.findById(underOver.getMatchDetail().getId());
 		if(check.isPresent()) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Under Over is already exists!");
 		}
