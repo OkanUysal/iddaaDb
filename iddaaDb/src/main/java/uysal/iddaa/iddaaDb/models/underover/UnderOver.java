@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 
 @Entity
-@Table(name = "under_over", uniqueConstraints = {@UniqueConstraint(columnNames = {"match_detail_id", "underOverNum"})})
+@Table(name = "underOver", uniqueConstraints = {@UniqueConstraint(columnNames = {"matchDetailId", "underOverNum"})})
 @JsonView(View.Public.class)
 public class UnderOver {
 
@@ -26,9 +26,9 @@ public class UnderOver {
 	private Long id;
 	
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "match_detail_id")
-	@JsonIgnoreProperties(value = { "under_over" })
-	private MatchDetail match_detail;
+	@JoinColumn(name = "matchDetailId")
+	@JsonIgnoreProperties(value = { "handicap", "underOver" })
+	private MatchDetail matchDetail;
 	
 	private float underOverNum;
 
@@ -47,11 +47,11 @@ public class UnderOver {
 	}
 
 
-	public UnderOver(Long id, MatchDetail match_detail, float underOverNum, float underRate, float underPercentage,
+	public UnderOver(Long id, MatchDetail matchDetail, float underOverNum, float underRate, float underPercentage,
 			float overPercentage, float overRate) {
 		super();
 		this.id = id;
-		this.match_detail = match_detail;
+		this.matchDetail = matchDetail;
 		this.underOverNum = underOverNum;
 		this.underRate = underRate;
 		this.underPercentage = underPercentage;
@@ -67,12 +67,12 @@ public class UnderOver {
 		this.id = id;
 	}
 
-	public MatchDetail getMatch_detail() {
-		return match_detail;
+	public MatchDetail getMatchDetail() {
+		return matchDetail;
 	}
 
-	public void setMatch_detail(MatchDetail match_detail) {
-		this.match_detail = match_detail;
+	public void setMatchDetail(MatchDetail matchDetail) {
+		this.matchDetail = matchDetail;
 	}
 
 	public float getUnderRate() {

@@ -43,10 +43,10 @@ public class MatchDetail {
 	@JsonView(View.Internal.class)
 	private Season season;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "match_detail", cascade = CascadeType.ALL)
-	@JsonIgnoreProperties(value = { "match_detail" })
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "matchDetail", cascade = CascadeType.ALL)
+	@JsonIgnoreProperties(value = { "matchDetail" })
 	@JsonView(View.Public.class)
-	private Set<UnderOver> under_over;
+	private Set<UnderOver> underOver;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "matchDetail", cascade = CascadeType.ALL)
 	@JsonIgnoreProperties(value = { "matchDetail" })
@@ -83,7 +83,7 @@ public class MatchDetail {
 		super();
 	}
 
-	public MatchDetail(Long id, Team home, Team away, Season season, Set<UnderOver> under_over,
+	public MatchDetail(Long id, Team home, Team away, Season season, Set<UnderOver> underOver,
 			Set<HandicapMatchResult> handicap, Set<GoalRange> goalRange, Set<BothTeamToScore> bothTeamToScore,
 			int home_half_time_score, int away_half_time_score, int home_match_score, int away_match_score, Date date) {
 		super();
@@ -91,7 +91,7 @@ public class MatchDetail {
 		this.home = home;
 		this.away = away;
 		this.season = season;
-		this.under_over = under_over;
+		this.underOver = underOver;
 		this.handicap = handicap;
 		this.goalRange = goalRange;
 		this.bothTeamToScore = bothTeamToScore;
@@ -134,12 +134,12 @@ public class MatchDetail {
 		this.season = season;
 	}
 
-	public Set<UnderOver> getUnder_over() {
-		return under_over;
+	public Set<UnderOver> getUnderOver() {
+		return underOver;
 	}
 
-	public void setUnder_over(Set<UnderOver> under_over) {
-		this.under_over = under_over;
+	public void setUnderOver(Set<UnderOver> underOver) {
+		this.underOver = underOver;
 	}
 
 	public Set<HandicapMatchResult> getHandicap() {

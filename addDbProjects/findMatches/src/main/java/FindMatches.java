@@ -12,7 +12,7 @@ import com.google.gson.JsonParser;
 public class FindMatches {
 
 	public static String startDate = "14/09/2022";
-	public static String endDate = "26/09/2022";
+	public static String endDate = "15/09/2022";
 
 	public static void main(String[] args) {
 
