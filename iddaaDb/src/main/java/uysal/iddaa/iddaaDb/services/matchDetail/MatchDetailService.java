@@ -6,7 +6,8 @@ import java.util.Optional;
 import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetail;
 
 public interface MatchDetailService {
-	List<Object> findAllMatchDetailSumarry();
+	
+	List<MatchDetail> findAll();
 
 	Optional<MatchDetail> findById(Long id);
 	

@@ -18,10 +18,10 @@ public class MatchDetailServiceImp implements MatchDetailService {
 
 	@Autowired
 	private TeamService teamService;
-
+	
 	@Override
-	public List<Object> findAllMatchDetailSumarry() {
-		return matchDetailRepository.findAllMatchDetailSumarry();
+	public List<MatchDetail> findAll() {
+		return matchDetailRepository.findAll();
 	}
 
 	@Override
