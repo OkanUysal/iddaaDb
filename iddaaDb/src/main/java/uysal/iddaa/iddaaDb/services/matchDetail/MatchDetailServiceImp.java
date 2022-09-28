@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetail;
 import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetailRepository;
+import uysal.iddaa.iddaaDb.models.season.Season;
+import uysal.iddaa.iddaaDb.services.season.SeasonService;
 import uysal.iddaa.iddaaDb.services.team.TeamService;
 
 @Service
@@ -18,6 +20,9 @@ public class MatchDetailServiceImp implements MatchDetailService {
 
 	@Autowired
 	private TeamService teamService;
+	
+	@Autowired
+	private SeasonService seasonService;
 	
 	@Override
 	public List<MatchDetail> findAll() {
@@ -33,6 +38,7 @@ public class MatchDetailServiceImp implements MatchDetailService {
 	public MatchDetail addNewMatchDetail(MatchDetail matchDetail) {
 		matchDetail.setHome(teamService.findById(matchDetail.getHome().getId()).get());
 		matchDetail.setAway(teamService.findById(matchDetail.getAway().getId()).get());
+		matchDetail.setSeason(seasonService.findById(matchDetail.getSeason().getId()).get());
 		return matchDetailRepository.save(matchDetail);
 	}
 
