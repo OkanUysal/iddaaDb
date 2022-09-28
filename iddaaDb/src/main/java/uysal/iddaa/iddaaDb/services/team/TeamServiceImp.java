@@ -14,10 +14,10 @@ public class TeamServiceImp implements TeamService {
 
 	@Autowired
 	private TeamRepository teamRepository;
-
+	
 	@Override
-	public List<Object> findAllTeamSumarry() {
-		return teamRepository.findAllTeamSumarry();
+	public List<Team> findAll() {
+		return teamRepository.findAll();
 	}
 
 	@Override

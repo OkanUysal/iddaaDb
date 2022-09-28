@@ -7,7 +7,7 @@ import uysal.iddaa.iddaaDb.models.team.Team;
 
 public interface TeamService {
 
-	List<Object> findAllTeamSumarry();
+	List<Team> findAll();
 
 	Optional<Team> findById(Long id);
 

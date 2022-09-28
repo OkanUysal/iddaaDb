@@ -23,11 +23,11 @@ public class MatchDetailController {
 
 	@Autowired
 	private MatchDetailService matchDetailService;
-
+	
 	@GetMapping(value = "/matchDetails")
 	@JsonView(View.Public.class)
-	public List<Object> getLeagues() {
-		return matchDetailService.findAllMatchDetailSumarry();
+	public List<MatchDetail> getLeagues() {
+		return matchDetailService.findAll();
 	}
 
 	@GetMapping(value = "/matchDetail/{id}")

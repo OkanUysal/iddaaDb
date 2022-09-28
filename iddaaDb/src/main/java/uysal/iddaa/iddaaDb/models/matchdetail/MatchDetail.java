@@ -28,39 +28,39 @@ public class MatchDetail {
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "home_id")
 	@JsonIgnoreProperties(value = { "homeMatches", "awayMatches" })
-	@JsonView(View.Public.class)
+	@JsonView(View.Internal.class)
 	private Team home;
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "away_id")
 	@JsonIgnoreProperties(value = { "homeMatches", "awayMatches" })
-	@JsonView(View.Public.class)
+	@JsonView(View.Internal.class)
 	private Team away;
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "season_id")
 	@JsonIgnoreProperties(value = { "matchDetails" })
-	@JsonView(View.Public.class)
+	@JsonView(View.Internal.class)
 	private Season season;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "match_detail", cascade = CascadeType.ALL)
 	@JsonIgnoreProperties(value = { "match_detail" })
-	@JsonView(View.Internal.class)
+	@JsonView(View.Public.class)
 	private Set<UnderOver> under_over;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "matchDetail", cascade = CascadeType.ALL)
 	@JsonIgnoreProperties(value = { "matchDetail" })
-	@JsonView(View.Internal.class)
+	@JsonView(View.Public.class)
 	private Set<HandicapMatchResult> handicap;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "matchDetail", cascade = CascadeType.ALL)
 	@JsonIgnoreProperties(value = { "matchDetail" })
-	@JsonView(View.Internal.class)
+	@JsonView(View.Public.class)
 	private Set<GoalRange> goalRange;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "matchDetail", cascade = CascadeType.ALL)
 	@JsonIgnoreProperties(value = { "matchDetail" })
-	@JsonView(View.Internal.class)
+	@JsonView(View.Public.class)
 	private Set<BothTeamToScore> bothTeamToScore;
 
 	@JsonView(View.Internal.class)
@@ -69,14 +69,14 @@ public class MatchDetail {
 	@JsonView(View.Internal.class)
 	private int away_half_time_score;
 
-	@JsonView(View.Public.class)
+	@JsonView(View.Internal.class)
 	private int home_match_score;
 
-	@JsonView(View.Public.class)
+	@JsonView(View.Internal.class)
 	private int away_match_score;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
-	@JsonView(View.Public.class)
+	@JsonView(View.Internal.class)
 	private Date date;
 
 	public MatchDetail() {

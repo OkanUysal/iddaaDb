@@ -26,8 +26,8 @@ public class TeamController {
 
 	@GetMapping(value = "/teams")
 	@JsonView(View.Public.class)
-	public List<Object> getLeagues() {
-		return teamService.findAllTeamSumarry();
+	public List<Team> getLeagues() {
+		return teamService.findAll();
 	}
 
 	@GetMapping(value = "/team/{id}")
