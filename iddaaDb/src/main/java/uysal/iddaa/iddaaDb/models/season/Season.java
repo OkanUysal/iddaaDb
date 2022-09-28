@@ -35,8 +35,8 @@ public class Season {
 	@JsonView(View.Public.class)
 	private League league;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "season", cascade = CascadeType.ALL)
-	@JsonIgnoreProperties(value = { "home", "away" })
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "season", cascade = CascadeType.ALL)
+	@JsonIgnoreProperties(value = { "season", "home", "away" })
 	@JsonView(View.Internal.class)
 	private Set<MatchDetail> matchDetails;
 

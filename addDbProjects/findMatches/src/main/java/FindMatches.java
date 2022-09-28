@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -10,7 +11,7 @@ import com.google.gson.JsonParser;
 
 public class FindMatches {
 
-	public static String startDate = "01/09/2022";
+	public static String startDate = "14/09/2022";
 	public static String endDate = "26/09/2022";
 
 	public static void main(String[] args) {
@@ -18,6 +19,36 @@ public class FindMatches {
 		Date d = null;
 		String pattern = "dd/MM/yyyy";
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+		
+		try {
+			JsonArray countriesJsonArray = new JsonParser().parse(Utils.getRequest("http://localhost:8080/countries")).getAsJsonArray();
+			countriesJsonArray.forEach( (c) -> {
+				Utils.countries.add(c.getAsJsonObject().get("id").getAsInt());
+			});
+			
+			JsonArray leagueJsonArray = new JsonParser().parse(Utils.getRequest("http://localhost:8080/leagues")).getAsJsonArray();
+			leagueJsonArray.forEach( (l) -> {
+				Utils.leagues.add(l.getAsJsonObject().get("id").getAsInt());
+			});
+			
+			JsonArray seasonsJsonArray = new JsonParser().parse(Utils.getRequest("http://localhost:8080/seasons")).getAsJsonArray();
+			seasonsJsonArray.forEach( (s) -> {
+				Utils.seasons.add(s.getAsJsonObject().get("id").getAsInt());
+			});
+			
+			JsonArray teamsJsonArray = new JsonParser().parse(Utils.getRequest("http://localhost:8080/teams")).getAsJsonArray();
+			teamsJsonArray.forEach( (t) -> {
+				Utils.teams.add(t.getAsJsonObject().get("id").getAsInt());
+			});
+			
+			JsonArray matchDetailsJsonArray = new JsonParser().parse(Utils.getRequest("http://localhost:8080/matchDetails")).getAsJsonArray();
+			matchDetailsJsonArray.forEach( (m) -> {
+				Utils.matchDetails.put(m.getAsJsonObject().get("id").getAsInt(), m.toString());
+			});
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		try {
 			d = simpleDateFormat.parse(startDate);
