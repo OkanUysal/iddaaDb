@@ -163,16 +163,16 @@ public class DbInfo {
 			handicap = Integer.valueOf(betName.split("[():]")[1]) - Integer.valueOf(betName.split("[():]")[2]);
 		}
 
-		if (!matchDetails.equals("")) {
-			JsonObject matchResults = new JsonParser().parse(matchDetails).getAsJsonObject();
-
-			for (int i = 0; i < matchResults.get("handicap").getAsJsonArray().size(); i++) {
-				if (matchResults.get("handicap").getAsJsonArray().get(i).getAsJsonObject().get("handicapNum")
-						.getAsInt() == handicap) {
-					return;
-				}
-			}
-		}
+//		if (matchDetails != null && !matchDetails.equals("")) {
+//			JsonObject matchResults = new JsonParser().parse(matchDetails).getAsJsonObject();
+//
+//			for (int i = 0; i < matchResults.get("handicap").getAsJsonArray().size(); i++) {
+//				if (matchResults.get("handicap").getAsJsonArray().get(i).getAsJsonObject().get("handicapNum")
+//						.getAsInt() == handicap) {
+//					return;
+//				}
+//			}
+//		}
 
 		for (int i = 0; i < betNames.size(); i++) {
 			if (betNames.get(i).text().equals("1")) {
@@ -230,16 +230,16 @@ public class DbInfo {
 
 		underOverNum = Float.valueOf(betName.trim().split(" ")[0].replace(",", "."));
 		
-		if (!matchDetails.equals("")) {
-			JsonObject matchResults = new JsonParser().parse(matchDetails).getAsJsonObject();
-
-			for (int i = 0; i < matchResults.get("under_over").getAsJsonArray().size(); i++) {
-				if (matchResults.get("under_over").getAsJsonArray().get(i).getAsJsonObject().get("underOverNum")
-						.getAsFloat() == underOverNum) {
-					return;
-				}
-			}
-		}
+//		if (!matchDetails.equals("")) {
+//			JsonObject matchResults = new JsonParser().parse(matchDetails).getAsJsonObject();
+//
+//			for (int i = 0; i < matchResults.get("under_over").getAsJsonArray().size(); i++) {
+//				if (matchResults.get("under_over").getAsJsonArray().get(i).getAsJsonObject().get("underOverNum")
+//						.getAsFloat() == underOverNum) {
+//					return;
+//				}
+//			}
+//		}
 
 		for (int i = 0; i < betNames.size(); i++) {
 			if (betNames.get(i).text().equals("Alt")) {

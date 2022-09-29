@@ -29,13 +29,13 @@ public class Season {
 	@JsonView(View.Public.class)
 	private String name;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.DETACH)
 	@JoinColumn(name = "league_id")
 	@JsonIgnoreProperties(value = { "seasons" })
 	@JsonView(View.Public.class)
 	private League league;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "season", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "season", cascade = CascadeType.DETACH)
 	@JsonIgnoreProperties(value = { "season", "home", "away" })
 	@JsonView(View.Internal.class)
 	private Set<MatchDetail> matchDetails;

@@ -25,7 +25,7 @@ public class UnderOver {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.DETACH)
 	@JoinColumn(name = "matchDetailId")
 	@JsonIgnoreProperties(value = { "handicap", "underOver" })
 	private MatchDetail matchDetail;

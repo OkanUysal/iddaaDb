@@ -36,7 +36,7 @@ public class SeasonServiceImp implements SeasonService{
 
 	@Override
 	public Season addNewSeason(Season season) {
-		season.setLeague(leagueService.findById(season.getLeague().getId()).get());
+//		season.setLeague(leagueService.findById(season.getLeague().getId()).get());
 		return seasonRepository.save(season);
 	}
 

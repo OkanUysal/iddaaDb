@@ -21,7 +21,7 @@ public class Country {
 	@JsonView(View.Public.class)
 	private String name;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "country", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "country", cascade = CascadeType.DETACH)
 	@JsonIgnoreProperties(value = { "country", "seasons" })
 	@JsonView(View.Internal.class)
 	private Set<League> leagues;

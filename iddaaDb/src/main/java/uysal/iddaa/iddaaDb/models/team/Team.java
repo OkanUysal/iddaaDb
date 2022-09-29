@@ -21,12 +21,12 @@ public class Team {
 	@JsonView(View.Public.class)
 	private String name;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "home", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "home", cascade = CascadeType.DETACH)
 	@JsonIgnoreProperties(value = { "match_result" })
 	@JsonView(View.Internal.class)
 	private Set<MatchDetail> homeMatches;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "away", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "away", cascade = CascadeType.DETACH)
 	@JsonIgnoreProperties(value = { "match_result" })
 	@JsonView(View.Internal.class)
 	private Set<MatchDetail> awayMatches;

@@ -25,7 +25,7 @@ public class BothTeamToScore {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.DETACH)
 	@JoinColumn(name = "matchDetailId")
 	@JsonIgnoreProperties(value = { "handicap" })
 	private MatchDetail matchDetail;

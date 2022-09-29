@@ -25,40 +25,40 @@ public class MatchDetail {
 	@JsonView(View.Public.class)
 	private Long id;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.DETACH)
 	@JoinColumn(name = "home_id")
 	@JsonIgnoreProperties(value = { "homeMatches", "awayMatches" })
 	@JsonView(View.Internal.class)
 	private Team home;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.DETACH)
 	@JoinColumn(name = "away_id")
 	@JsonIgnoreProperties(value = { "homeMatches", "awayMatches" })
 	@JsonView(View.Internal.class)
 	private Team away;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.DETACH)
 	@JoinColumn(name = "season_id")
 	@JsonIgnoreProperties(value = { "matchDetails" })
 	@JsonView(View.Internal.class)
 	private Season season;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "matchDetail", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "matchDetail", cascade = CascadeType.DETACH)
 	@JsonIgnoreProperties(value = { "matchDetail" })
 	@JsonView(View.Public.class)
 	private Set<UnderOver> underOver;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "matchDetail", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "matchDetail", cascade = CascadeType.DETACH)
 	@JsonIgnoreProperties(value = { "matchDetail" })
 	@JsonView(View.Public.class)
 	private Set<HandicapMatchResult> handicap;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "matchDetail", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "matchDetail", cascade = CascadeType.DETACH)
 	@JsonIgnoreProperties(value = { "matchDetail" })
 	@JsonView(View.Public.class)
 	private Set<GoalRange> goalRange;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "matchDetail", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "matchDetail", cascade = CascadeType.DETACH)
 	@JsonIgnoreProperties(value = { "matchDetail" })
 	@JsonView(View.Public.class)
 	private Set<BothTeamToScore> bothTeamToScore;
