@@ -30,7 +30,7 @@ public class Season {
 	private String name;
 
 	@ManyToOne(cascade = CascadeType.DETACH)
-	@JoinColumn(name = "league_id")
+	@JoinColumn(name = "leagueId")
 	@JsonIgnoreProperties(value = { "seasons" })
 	@JsonView(View.Public.class)
 	private League league;

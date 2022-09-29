@@ -22,12 +22,12 @@ public class Team {
 	private String name;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "home", cascade = CascadeType.DETACH)
-	@JsonIgnoreProperties(value = { "match_result" })
+	@JsonIgnoreProperties(value = {"underOver", "handicap", "goalRange", "bothTeamToScore"})
 	@JsonView(View.Internal.class)
 	private Set<MatchDetail> homeMatches;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "away", cascade = CascadeType.DETACH)
-	@JsonIgnoreProperties(value = { "match_result" })
+	@JsonIgnoreProperties(value = {"underOver", "handicap", "goalRange", "bothTeamToScore"})
 	@JsonView(View.Internal.class)
 	private Set<MatchDetail> awayMatches;
 
