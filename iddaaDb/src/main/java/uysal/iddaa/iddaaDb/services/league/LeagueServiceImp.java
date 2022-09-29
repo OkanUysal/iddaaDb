@@ -36,7 +36,7 @@ public class LeagueServiceImp implements LeagueService {
 	
 	@Override
 	public League addNewLeague(League league) {
-		league.setCountry(countryService.findById(league.getCountry().getId()).get());
+//		league.setCountry(countryService.findById(league.getCountry().getId()).get());
 		return leagueRepository.save(league);
 	}
 

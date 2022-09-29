@@ -1,4 +1,3 @@
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -11,8 +10,8 @@ import com.google.gson.JsonParser;
 
 public class FindMatches {
 
-	public static String startDate = "14/09/2022";
-	public static String endDate = "15/09/2022";
+	public static String startDate = "01/01/2021";
+	public static String endDate = "27/09/2022";
 
 	public static void main(String[] args) {
 

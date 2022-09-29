@@ -25,7 +25,7 @@ public class GoalRangeServiceImp implements GoalRangeService{
 
 	@Override
 	public GoalRange save(GoalRange goalRange) {
-		goalRange.setMatchDetail(matchDetailService.findById(goalRange.getMatchDetail().getId()).get());
+//		goalRange.setMatchDetail(matchDetailService.findById(goalRange.getMatchDetail().getId()).get());
 		return goalRangeRepository.save(goalRange);
 	}
 

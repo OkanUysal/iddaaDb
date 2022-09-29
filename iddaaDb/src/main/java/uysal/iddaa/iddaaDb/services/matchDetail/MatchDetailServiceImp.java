@@ -36,9 +36,9 @@ public class MatchDetailServiceImp implements MatchDetailService {
 
 	@Override
 	public MatchDetail addNewMatchDetail(MatchDetail matchDetail) {
-		matchDetail.setHome(teamService.findById(matchDetail.getHome().getId()).get());
-		matchDetail.setAway(teamService.findById(matchDetail.getAway().getId()).get());
-		matchDetail.setSeason(seasonService.findById(matchDetail.getSeason().getId()).get());
+//		matchDetail.setHome(teamService.findById(matchDetail.getHome().getId()).get());
+//		matchDetail.setAway(teamService.findById(matchDetail.getAway().getId()).get());
+//		matchDetail.setSeason(seasonService.findById(matchDetail.getSeason().getId()).get());
 		return matchDetailRepository.save(matchDetail);
 	}
 

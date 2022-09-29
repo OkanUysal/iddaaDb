@@ -25,7 +25,7 @@ public class BothTeamToScoreServiceImp implements BothTeamToScoreService{
 
 	@Override
 	public BothTeamToScore save(BothTeamToScore bothTeamToScore) {
-		bothTeamToScore.setMatchDetail(matchDetailService.findById(bothTeamToScore.getMatchDetail().getId()).get());
+//		bothTeamToScore.setMatchDetail(matchDetailService.findById(bothTeamToScore.getMatchDetail().getId()).get());
 		return bothTeamToScoreRepository.save(bothTeamToScore);
 	}
 }

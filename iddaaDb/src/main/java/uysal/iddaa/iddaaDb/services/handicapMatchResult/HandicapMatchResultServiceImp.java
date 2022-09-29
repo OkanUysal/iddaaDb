@@ -25,7 +25,7 @@ public class HandicapMatchResultServiceImp implements HandicapMatchResultService
 
 	@Override
 	public HandicapMatchResult save(HandicapMatchResult handicap) {
-		handicap.setMatchDetail(matchDetailService.findById(handicap.getMatchDetail().getId()).get());
+//		handicap.setMatchDetail(matchDetailService.findById(handicap.getMatchDetail().getId()).get());
 		return handicapRepository.save(handicap);
 	}
 
