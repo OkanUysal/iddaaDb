@@ -18,7 +18,7 @@ import uysal.iddaa.iddaaDb.models.underover.UnderOver;
 import uysal.iddaa.iddaaDb.utils.View;
 
 @Entity
-@Table(name = "match_datail")
+@Table(name = "matchDetail")
 public class MatchDetail {
 
 	@Id
@@ -26,57 +26,57 @@ public class MatchDetail {
 	private Long id;
 
 	@ManyToOne(cascade = CascadeType.DETACH)
-	@JoinColumn(name = "home_id")
+	@JoinColumn(name = "homeId")
 	@JsonIgnoreProperties(value = { "homeMatches", "awayMatches" })
-	@JsonView(View.Internal.class)
+	@JsonView(View.Public.class)
 	private Team home;
 
 	@ManyToOne(cascade = CascadeType.DETACH)
-	@JoinColumn(name = "away_id")
+	@JoinColumn(name = "awayId")
 	@JsonIgnoreProperties(value = { "homeMatches", "awayMatches" })
-	@JsonView(View.Internal.class)
+	@JsonView(View.Public.class)
 	private Team away;
 
 	@ManyToOne(cascade = CascadeType.DETACH)
-	@JoinColumn(name = "season_id")
+	@JoinColumn(name = "seasonId")
 	@JsonIgnoreProperties(value = { "matchDetails" })
 	@JsonView(View.Internal.class)
 	private Season season;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "matchDetail", cascade = CascadeType.DETACH)
 	@JsonIgnoreProperties(value = { "matchDetail" })
-	@JsonView(View.Public.class)
+	@JsonView(View.Internal.class)
 	private Set<UnderOver> underOver;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "matchDetail", cascade = CascadeType.DETACH)
 	@JsonIgnoreProperties(value = { "matchDetail" })
-	@JsonView(View.Public.class)
+	@JsonView(View.Internal.class)
 	private Set<HandicapMatchResult> handicap;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "matchDetail", cascade = CascadeType.DETACH)
 	@JsonIgnoreProperties(value = { "matchDetail" })
-	@JsonView(View.Public.class)
+	@JsonView(View.Internal.class)
 	private Set<GoalRange> goalRange;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "matchDetail", cascade = CascadeType.DETACH)
 	@JsonIgnoreProperties(value = { "matchDetail" })
-	@JsonView(View.Public.class)
+	@JsonView(View.Internal.class)
 	private Set<BothTeamToScore> bothTeamToScore;
 
-	@JsonView(View.Internal.class)
-	private int home_half_time_score;
+	@JsonView(View.Public.class)
+	private int homeHalfTimeScore;
 
-	@JsonView(View.Internal.class)
-	private int away_half_time_score;
+	@JsonView(View.Public.class)
+	private int awayHalfTimeScore;
 
-	@JsonView(View.Internal.class)
-	private int home_match_score;
+	@JsonView(View.Public.class)
+	private int homeMatchScore;
 
-	@JsonView(View.Internal.class)
-	private int away_match_score;
+	@JsonView(View.Public.class)
+	private int awayMatchScore;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
-	@JsonView(View.Internal.class)
+	@JsonView(View.Public.class)
 	private Date date;
 
 	public MatchDetail() {
@@ -85,7 +85,7 @@ public class MatchDetail {
 
 	public MatchDetail(Long id, Team home, Team away, Season season, Set<UnderOver> underOver,
 			Set<HandicapMatchResult> handicap, Set<GoalRange> goalRange, Set<BothTeamToScore> bothTeamToScore,
-			int home_half_time_score, int away_half_time_score, int home_match_score, int away_match_score, Date date) {
+			int homeHalfTimeScore, int awayHalfTimeScore, int homeMatchScore, int awayMatchScore, Date date) {
 		super();
 		this.id = id;
 		this.home = home;
@@ -95,10 +95,10 @@ public class MatchDetail {
 		this.handicap = handicap;
 		this.goalRange = goalRange;
 		this.bothTeamToScore = bothTeamToScore;
-		this.home_half_time_score = home_half_time_score;
-		this.away_half_time_score = away_half_time_score;
-		this.home_match_score = home_match_score;
-		this.away_match_score = away_match_score;
+		this.homeHalfTimeScore = homeHalfTimeScore;
+		this.awayHalfTimeScore = awayHalfTimeScore;
+		this.homeMatchScore = homeMatchScore;
+		this.awayMatchScore = awayMatchScore;
 		this.date = date;
 	}
 
@@ -166,36 +166,36 @@ public class MatchDetail {
 		this.bothTeamToScore = bothTeamToScore;
 	}
 
-	public int getHome_half_time_score() {
-		return home_half_time_score;
+	public int getHomeHalfTimeScore() {
+		return homeHalfTimeScore;
 	}
 
-	public void setHome_half_time_score(int home_half_time_score) {
-		this.home_half_time_score = home_half_time_score;
+	public void setHomeHalfTimeScore(int homeHalfTimeScore) {
+		this.homeHalfTimeScore = homeHalfTimeScore;
 	}
 
-	public int getAway_half_time_score() {
-		return away_half_time_score;
+	public int getAwayHalfTimeScore() {
+		return awayHalfTimeScore;
 	}
 
-	public void setAway_half_time_score(int away_half_time_score) {
-		this.away_half_time_score = away_half_time_score;
+	public void setAwayHalfTimeScore(int awayHalfTimeScore) {
+		this.awayHalfTimeScore = awayHalfTimeScore;
 	}
 
-	public int getHome_match_score() {
-		return home_match_score;
+	public int getHomeMatchScore() {
+		return homeMatchScore;
 	}
 
-	public void setHome_match_score(int home_match_score) {
-		this.home_match_score = home_match_score;
+	public void setHomeMatchScore(int homeMatchScore) {
+		this.homeMatchScore = homeMatchScore;
 	}
 
-	public int getAway_match_score() {
-		return away_match_score;
+	public int getAwayMatchScore() {
+		return awayMatchScore;
 	}
 
-	public void setAway_match_score(int away_match_score) {
-		this.away_match_score = away_match_score;
+	public void setAwayMatchScore(int awayMatchScore) {
+		this.awayMatchScore = awayMatchScore;
 	}
 
 	public Date getDate() {
