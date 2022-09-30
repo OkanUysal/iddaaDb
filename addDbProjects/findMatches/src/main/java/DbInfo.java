@@ -105,10 +105,10 @@ public class DbInfo {
 		matchDetail.add("home", homeTeam);
 		matchDetail.add("away", awayTeam);
 		matchDetail.add("season", season);
-		matchDetail.addProperty("home_half_time_score", this.homeHalfScore);
-		matchDetail.addProperty("away_half_time_score", this.awayHalfScore);
-		matchDetail.addProperty("home_match_score", this.homeScore);
-		matchDetail.addProperty("away_match_score", this.awayScore);
+		matchDetail.addProperty("homeHalfTimeScore", this.homeHalfScore);
+		matchDetail.addProperty("awayHalfTimeScore", this.awayHalfScore);
+		matchDetail.addProperty("homeMatchScore", this.homeScore);
+		matchDetail.addProperty("awayMatchScore", this.awayScore);
 		matchDetail.addProperty("date", this.date);
 		if (!Utils.matchDetails.containsKey(this.matchId)) {
 			if (Utils.sendPost("http://localhost:8080/addMatchDetail", matchDetail.toString())) {
