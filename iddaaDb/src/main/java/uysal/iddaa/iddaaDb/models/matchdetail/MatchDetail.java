@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import uysal.iddaa.iddaaDb.models.bothTeamToScore.BothTeamToScore;
+import uysal.iddaa.iddaaDb.models.cornerCount.CornerCount;
 import uysal.iddaa.iddaaDb.models.doubleChance.DoubleChance;
 import uysal.iddaa.iddaaDb.models.goalRange.GoalRange;
 import uysal.iddaa.iddaaDb.models.handicapMatchResult.HandicapMatchResult;
@@ -68,6 +69,11 @@ public class MatchDetail {
 	@JsonIgnoreProperties(value = { "matchDetail" })
 	@JsonView(View.Internal.class)
 	private Set<DoubleChance> doubleChance;
+	
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "matchDetail", cascade = CascadeType.DETACH)
+	@JsonIgnoreProperties(value = { "matchDetail" })
+	@JsonView(View.Internal.class)
+	private Set<CornerCount> cornerCount;
 
 	@JsonView(View.Public.class)
 	private int homeHalfTimeScore;
