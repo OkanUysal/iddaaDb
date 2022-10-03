@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import uysal.iddaa.iddaaDb.models.team.Team;
+import uysal.iddaa.iddaaDb.models.team.TeamDTO;
 import uysal.iddaa.iddaaDb.models.team.TeamRepository;
 
 @Service
@@ -33,6 +34,12 @@ public class TeamServiceImp implements TeamService {
 	@Override
 	public Team addNewTeam(Team team) {
 		return teamRepository.save(team);
+	}
+
+	@Override
+	public List<TeamDTO> findAllSummary() {
+		List<TeamDTO> a = teamRepository.findAllSummary();
+		return a;
 	}
 
 }
