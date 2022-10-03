@@ -15,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import uysal.iddaa.iddaaDb.models.team.Team;
+import uysal.iddaa.iddaaDb.models.team.TeamDTO;
 import uysal.iddaa.iddaaDb.services.team.TeamService;
 import uysal.iddaa.iddaaDb.utils.View;
 
@@ -25,9 +26,9 @@ public class TeamController {
 	private TeamService teamService;
 
 	@GetMapping(value = "/teams")
-	@JsonView(View.Public.class)
-	public List<Team> getLeagues() {
-		return teamService.findAll();
+//	@JsonView(View.Public.class)
+	public List<TeamDTO> getLeagues() {
+		return teamService.findAllSummary();
 	}
 
 	@GetMapping(value = "/team/{id}")
