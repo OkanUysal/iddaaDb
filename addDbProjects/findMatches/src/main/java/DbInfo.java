@@ -1,3 +1,5 @@
+import java.util.Date;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -110,11 +112,12 @@ public class DbInfo {
 		matchDetail.addProperty("homeMatchScore", this.homeScore);
 		matchDetail.addProperty("awayMatchScore", this.awayScore);
 		matchDetail.addProperty("date", this.date);
-		if (!Utils.matchDetails.containsKey(this.matchId)) {
-			if (Utils.sendPost("http://localhost:8080/addMatchDetail", matchDetail.toString())) {
-				Utils.matchDetails.put(this.matchId, "");
-			}
-		}
+//		if (!Utils.matchDetails.containsKey(this.matchId)) {
+//			if (Utils.sendPost("http://localhost:8080/addMatchDetail", matchDetail.toString())) {
+//				Utils.matchDetails.put(this.matchId, "");
+//			}
+//		}
+		Utils.sendPost("http://localhost:8080/addMatchDetail", matchDetail.toString());
 
 		getBetDetails(Utils.matchDetails.get(this.matchId));
 
@@ -122,7 +125,13 @@ public class DbInfo {
 
 	private void getBetDetails(String matchDetails) {
 		try {
+			Date d1, d2;
+			
+			d1 = new Date();
 			Document doc = Jsoup.connect("http://arsiv.mackolik.com/Match/Default.aspx?id=" + matchId).get();
+			d2 = new Date();
+			
+			System.out.println("Match details request: " + matchId + " - Time: " + (d2.getTime() - d1.getTime()) + " ns.");
 
 			Elements betsTable = doc.select("div#compare-left-coll");
 
