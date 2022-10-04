@@ -12,5 +12,9 @@ public interface MatchDetailService {
 	Optional<MatchDetail> findById(Long id);
 	
 	MatchDetail addNewMatchDetail(MatchDetail matchDetail);
+	
+	void insertWithQuery(MatchDetail matchDetail);
+	
+	boolean isExistById(Long id);
 
 }

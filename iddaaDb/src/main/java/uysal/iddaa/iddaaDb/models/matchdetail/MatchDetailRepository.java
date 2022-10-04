@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MatchDetailRepository extends JpaRepository<MatchDetail, Long> {
 	
+	boolean existsById(Long id);
+	
 	Optional<MatchDetail> findById(Long id);
 	
 }

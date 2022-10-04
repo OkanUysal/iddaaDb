@@ -38,10 +38,11 @@ public class MatchDetailController {
 	
 	@PostMapping(value = "addMatchDetail")
 	public MatchDetail addNewMatchDetail(@RequestBody MatchDetail matchDetail) {
-		Optional<MatchDetail> check = matchDetailService.findById(matchDetail.getId());
-		if(check.isPresent()) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Match Detail already exists!");
+		boolean check = matchDetailService.isExistById(matchDetail.getId());
+		if(check) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Match Detail already exists!");			
 		}
-		return matchDetailService.addNewMatchDetail(matchDetail);
+		matchDetailService.insertWithQuery(matchDetail);
+		return matchDetail;
 	}
 }
