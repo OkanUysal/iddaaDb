@@ -10,7 +10,7 @@ import com.google.gson.JsonParser;
 
 public class FindMatches {
 
-	public static String startDate = "01/01/2021";
+	public static String startDate = "27/06/2021";
 	public static String endDate = "27/09/2022";
 
 	public static void main(String[] args) {
@@ -40,10 +40,10 @@ public class FindMatches {
 				Utils.teams.add(t.getAsJsonObject().get("id").getAsInt());
 			});
 			
-			JsonArray matchDetailsJsonArray = new JsonParser().parse(Utils.getRequest("http://localhost:8080/matchDetails")).getAsJsonArray();
-			matchDetailsJsonArray.forEach( (m) -> {
-				Utils.matchDetails.put(m.getAsJsonObject().get("id").getAsInt(), m.toString());
-			});
+//			JsonArray matchDetailsJsonArray = new JsonParser().parse(Utils.getRequest("http://localhost:8080/matchDetails")).getAsJsonArray();
+//			matchDetailsJsonArray.forEach( (m) -> {
+//				Utils.matchDetails.put(m.getAsJsonObject().get("id").getAsInt(), m.toString());
+//			});
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -58,8 +58,12 @@ public class FindMatches {
 
 		while (!endDate.equals(simpleDateFormat.format(d))) {
 			try {
+				Date d1, d2;
+				d1 = new Date();
 				String result = Jsoup.connect("https://goapi.mackolik.com/livedata?date=" + simpleDateFormat.format(d))
 						.get().select("body").text();
+				d2 = new Date();
+				System.out.println("Goapi request: " + simpleDateFormat.format(d) + " - Time: " + (d2.getTime() - d1.getTime()) + " ns.");
 
 				JsonObject json = new JsonParser().parse(result).getAsJsonObject();
 

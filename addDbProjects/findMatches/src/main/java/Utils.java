@@ -3,6 +3,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,7 +17,8 @@ public class Utils {
 	public static HashMap<Integer, String> matchDetails = new HashMap<>();
 
 	public static boolean sendPost(String uri, String json) {
-		System.out.println(json);
+		Date d, d2;
+		d = new Date();
 		try {
 			URL url = new URL(uri);
 
@@ -38,7 +40,7 @@ public class Utils {
 				while ((responseLine = br.readLine()) != null) {
 					response.append(responseLine.trim());
 				}
-				System.out.println(response.toString());
+//				System.out.println(response.toString());
 			}
 
 		} catch (Exception e) {
@@ -46,10 +48,14 @@ public class Utils {
 //			System.exit(0);
 			return false;
 		}
+		d2 = new Date();
+		System.out.println("Post request: " + uri + "-" + json + " - Time: " + (d2.getTime() - d.getTime()) + " ns.");
 		return true;
 	}
 
 	public static String getRequest(String uri) {
+		Date d, d2;
+		d = new Date();
 		StringBuilder response = new StringBuilder();
 		try {
 			URL url = new URL(uri);
@@ -72,6 +78,8 @@ public class Utils {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		d2 = new Date();
+		System.out.println("Get request: " + uri + " - Time: " + (d2.getTime() - d.getTime()) + " ns.");
 		return response.toString();
 	}
 
