@@ -1,5 +1,6 @@
 package uysal.iddaa.iddaaDb.services.matchDetail;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetail;
+import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetailDTO;
 import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetailInsertRepository;
 import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetailRepository;
 import uysal.iddaa.iddaaDb.models.season.Season;
@@ -54,6 +56,16 @@ public class MatchDetailServiceImp implements MatchDetailService {
 	@Override
 	public boolean isExistById(Long id) {
 		return matchDetailRepository.existsById(id);
+	}
+
+	@Override
+	public List<MatchDetailDTO> findAllHomeMatchWithDate(Long id, Date fromDate, Date toDate) {
+		return matchDetailRepository.findAllHomeMatchWithDate(id, fromDate, toDate);
+	}
+
+	@Override
+	public List<MatchDetailDTO> findAllAwayMatchWithDate(Long id, Date fromDate, Date toDate) {
+		return matchDetailRepository.findAllAwayMatchWithDate(id, fromDate, toDate);
 	}
 
 }
