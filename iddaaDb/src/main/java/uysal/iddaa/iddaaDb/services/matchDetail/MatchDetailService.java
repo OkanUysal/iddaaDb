@@ -1,13 +1,19 @@
 package uysal.iddaa.iddaaDb.services.matchDetail;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetail;
+import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetailDTO;
 
 public interface MatchDetailService {
 	
 	List<MatchDetail> findAll();
+	
+	List<MatchDetailDTO> findAllHomeMatchWithDate(Long id, Date fromDate, Date toDate);
+	
+	List<MatchDetailDTO> findAllAwayMatchWithDate(Long id, Date fromDate, Date toDate);
 
 	Optional<MatchDetail> findById(Long id);
 	
