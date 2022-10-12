@@ -1,5 +1,6 @@
 package uysal.iddaa.iddaaDb.services.matchDetail;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +12,7 @@ import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetail;
 import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetailDTO;
 import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetailInsertRepository;
 import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetailRepository;
+import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetailSummaryDTO;
 import uysal.iddaa.iddaaDb.models.season.Season;
 import uysal.iddaa.iddaaDb.services.season.SeasonService;
 import uysal.iddaa.iddaaDb.services.team.TeamService;
@@ -66,6 +68,18 @@ public class MatchDetailServiceImp implements MatchDetailService {
 	@Override
 	public List<MatchDetailDTO> findAllAwayMatchWithDate(Long id, Date fromDate, Date toDate) {
 		return matchDetailRepository.findAllAwayMatchWithDate(id, fromDate, toDate);
+	}
+
+	@Override
+	public List<MatchDetailSummaryDTO> findAllMatchesforDate(Date date) {
+		Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.HOUR, 0);
+        cal.add(Calendar.DATE, 2); //minus number would decrement the days
+		return matchDetailRepository.findAllMatchforDate(date, cal.getTime());
 	}
 
 }

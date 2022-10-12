@@ -79,7 +79,7 @@ public class Utils {
 			e.printStackTrace();
 		}
 		d2 = new Date();
-		System.out.println("Get request: " + uri + " - Time: " + (d2.getTime() - d.getTime()) + " ns.");
+//		System.out.println("Get request: " + uri + " - Time: " + (d2.getTime() - d.getTime()) + " ns.");
 		return response.toString();
 	}
 

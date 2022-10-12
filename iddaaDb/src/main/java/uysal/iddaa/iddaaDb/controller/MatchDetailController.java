@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetail;
 import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetailDTO;
+import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetailSummaryDTO;
 import uysal.iddaa.iddaaDb.services.matchDetail.MatchDetailService;
 import uysal.iddaa.iddaaDb.utils.View;
 
@@ -29,7 +30,7 @@ public class MatchDetailController {
 	
 	@GetMapping(value = "/matchDetails")
 	@JsonView(View.Public.class)
-	public List<MatchDetail> getLeagues() {
+	public List<MatchDetail> getMatches() {
 		return matchDetailService.findAll();
 	}
 
@@ -49,6 +50,12 @@ public class MatchDetailController {
 	@JsonView(View.Internal.class)
 	public List<MatchDetailDTO> getMatchDetailAway(@PathVariable("id") Long id, @PathVariable("fromDate") @DateTimeFormat(pattern="yyyy-MM-dd") Date fromDate, @PathVariable("toDate") @DateTimeFormat(pattern="yyyy-MM-dd") Date toDate) {
 		return matchDetailService.findAllAwayMatchWithDate(id, fromDate, toDate);
+	}
+	
+	@GetMapping(value = "/matchDetailsforDate/{date}")
+	@JsonView(View.Internal.class)
+	public List<MatchDetailSummaryDTO> getMatchesforDate(@PathVariable @DateTimeFormat(pattern="yyyy-MM-dd") Date date ) {
+		return matchDetailService.findAllMatchesforDate(date);
 	}
 	
 	@PostMapping(value = "addMatchDetail")
