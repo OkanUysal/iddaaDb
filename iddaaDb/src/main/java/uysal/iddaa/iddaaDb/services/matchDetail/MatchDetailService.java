@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetail;
 import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetailDTO;
+import uysal.iddaa.iddaaDb.models.matchdetail.MatchDetailSummaryDTO;
 
 public interface MatchDetailService {
 	
@@ -14,6 +15,8 @@ public interface MatchDetailService {
 	List<MatchDetailDTO> findAllHomeMatchWithDate(Long id, Date fromDate, Date toDate);
 	
 	List<MatchDetailDTO> findAllAwayMatchWithDate(Long id, Date fromDate, Date toDate);
+	
+	List<MatchDetailSummaryDTO> findAllMatchesforDate(Date date);
 
 	Optional<MatchDetail> findById(Long id);
 	
