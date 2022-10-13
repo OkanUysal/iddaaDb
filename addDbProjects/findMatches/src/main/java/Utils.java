@@ -49,7 +49,7 @@ public class Utils {
 			return false;
 		}
 		d2 = new Date();
-		System.out.println("Post request: " + uri + "-" + json + " - Time: " + (d2.getTime() - d.getTime()) + " ns.");
+//		System.out.println("Post request: " + uri + "-" + json + " - Time: " + (d2.getTime() - d.getTime()) + " ns.");
 		return true;
 	}
 
