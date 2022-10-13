@@ -8,6 +8,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class GetCurrentSportTotoMatches {
+	
+	private static final int weekNumber = 152;
 
 	public static void main(String[] args) {
 		try {
@@ -29,6 +31,51 @@ public class GetCurrentSportTotoMatches {
 				
 				JsonArray array = getMatch(home, away, mackolikMatches, tds.get(1).text().split(" ")[1]);
 				if(array != null) {
+					JsonObject obj = new JsonObject();
+					obj.addProperty("weekNumber", weekNumber);
+					obj.addProperty("matchNumber", array.get(0).getAsInt());
+					obj.addProperty("homeId", array.get(1).getAsInt());
+					obj.addProperty("awayId", array.get(3).getAsInt());
+					
+					float ms1 = 1;
+					float msx = 1;
+					float ms2 = 1;
+					float ms1p = 0;
+					float msxp = 0;
+					float ms2p = 0;
+					float totalp = 0;
+					
+					try {
+						ms1 = Float.valueOf(array.get(18).getAsString());
+					} catch (Exception e) {
+					}
+					try {
+						msx = Float.valueOf(array.get(19).getAsString());
+					} catch (Exception e) {
+					}
+					try {
+						ms2 = Float.valueOf(array.get(20).getAsString());
+					} catch (Exception e) {
+					}
+					
+					ms1p = 1 / ms1 * 100;
+					msxp = 1 / msx * 100;
+					ms2p = 1 / ms2 * 100;
+
+					totalp = ms1p + msxp + ms2p;
+
+					ms1p = ms1p / totalp * 100;
+					msxp = msxp / totalp * 100;
+					ms2p = ms2p / totalp * 100;
+					
+					obj.addProperty("handicapPercentage1", ms1p);
+					obj.addProperty("handicapPercentageX", msxp);
+					obj.addProperty("handicapPercentage2", ms2p);
+					
+					obj.addProperty("date", tds.get(1).text().replaceAll("\\.", "/"));
+					
+					Utils.sendPost("http://localhost:8080/addCurrentSporTotoMatch", obj.toString());
+					
 					System.out.println("(" + array.get(1).getAsString() + "-" + array.get(3).getAsString() + ")" + array.get(18).getAsString() + "-" + array.get(19).getAsString() + "-" + array.get(20).getAsString());
 				} else {
 					System.out.println("Error!!!");
