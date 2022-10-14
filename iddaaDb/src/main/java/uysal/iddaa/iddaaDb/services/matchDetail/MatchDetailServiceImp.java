@@ -41,6 +41,11 @@ public class MatchDetailServiceImp implements MatchDetailService {
 	public Optional<MatchDetail> findById(Long id) {
 		return matchDetailRepository.findById(id);
 	}
+	
+	@Override
+	public List<Object> findAllIds() {
+		return matchDetailRepository.findAllIds();
+	}
 
 	@Override
 	public MatchDetail addNewMatchDetail(MatchDetail matchDetail) {

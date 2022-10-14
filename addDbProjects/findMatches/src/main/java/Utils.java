@@ -14,7 +14,7 @@ public class Utils {
 	public static Set<Integer> leagues = new HashSet<Integer>();
 	public static Set<Integer> seasons = new HashSet<Integer>();
 	public static Set<Integer> teams = new HashSet<Integer>();
-	public static HashMap<Integer, String> matchDetails = new HashMap<>();
+	public static HashSet<Integer> matchDetails = new HashSet();
 
 	public static boolean sendPost(String uri, String json) {
 		Date d, d2;

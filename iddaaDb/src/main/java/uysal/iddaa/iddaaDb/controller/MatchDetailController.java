@@ -33,6 +33,12 @@ public class MatchDetailController {
 	public List<MatchDetail> getMatches() {
 		return matchDetailService.findAll();
 	}
+	
+	@GetMapping(value = "/matchDetailIds")
+	@JsonView(View.Public.class)
+	public List<Object> getMatchIds() {
+		return matchDetailService.findAllIds();
+	}
 
 	@GetMapping(value = "/matchDetail/{id}")
 	@JsonView(View.Internal.class)

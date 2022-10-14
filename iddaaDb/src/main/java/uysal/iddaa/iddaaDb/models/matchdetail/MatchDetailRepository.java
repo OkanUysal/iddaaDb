@@ -15,6 +15,9 @@ public interface MatchDetailRepository extends JpaRepository<MatchDetail, Long> 
 	
 	Optional<MatchDetail> findById(Long id);
 	
+	@Query("select md.id from MatchDetail md")
+	List<Object> findAllIds();
+	
 	@Query("select new uysal.iddaa.iddaaDb.models.matchdetail.MatchDetailDTO(md.id, md.home.id, md.home.name, md.homeMatchScore, md.awayMatchScore, hmr.handicapPercentage1, hmr.handicapPercentageX, hmr.handicapPercentage2, md.date) from MatchDetail as md inner join md.handicap as hmr where md.home.id = :teamId and hmr.handicapNum = 0 and md.date >= :fromDate and md.date < :toDate")
 	List<MatchDetailDTO> findAllHomeMatchWithDate(Long teamId, Date fromDate, Date toDate);
 	

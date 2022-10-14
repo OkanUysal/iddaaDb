@@ -49,6 +49,10 @@ public class DbInfo {
 	}
 
 	public void addDb() {
+		if(Utils.matchDetails.contains(this.matchId)) {
+			return;
+		} 
+		
 		// add country
 		JsonObject country = new JsonObject();
 		country.addProperty("id", this.countryId);
@@ -119,11 +123,11 @@ public class DbInfo {
 //		}
 		Utils.sendPost("http://localhost:8080/addMatchDetail", matchDetail.toString());
 
-		getBetDetails(Utils.matchDetails.get(this.matchId));
+		getBetDetails();
 
 	}
 
-	private void getBetDetails(String matchDetails) {
+	private void getBetDetails() {
 		try {
 			Date d1, d2;
 			
@@ -142,12 +146,12 @@ public class DbInfo {
 				if ((text.startsWith("Maç Sonucu") && !text.startsWith("Maç Sonucu ve"))
 						|| text.startsWith("Handikaplı Maç Sonucu")) {
 					getHandicapMatchResult(text.substring(0, text.lastIndexOf(" ")), b.select("div.sgoutcome-name"),
-							b.select("div.sgoutcome-value"), matchDetails);
+							b.select("div.sgoutcome-value"));
 //					System.exit(0);
 				}
 				if ((text.contains("Alt/Üst") && text.substring(0, text.lastIndexOf(" ")).length() < 14)) {
 					getUnderOverResult(text.substring(0, text.lastIndexOf(" ")), b.select("div.sgoutcome-name"),
-							b.select("div.sgoutcome-value"), matchDetails);
+							b.select("div.sgoutcome-value"));
 //					System.exit(0);
 				}
 			});
@@ -156,7 +160,7 @@ public class DbInfo {
 		}
 	}
 
-	private void getHandicapMatchResult(String betName, Elements betNames, Elements betValues, String matchDetails) {
+	private void getHandicapMatchResult(String betName, Elements betNames, Elements betValues) {
 		int handicap = 0;
 		float ms1 = 1;
 		float msx = 1;
@@ -229,7 +233,7 @@ public class DbInfo {
 		Utils.sendPost("http://localhost:8080/addHandicapMatchResult", matchResult.toString());
 	}
 	
-	private void getUnderOverResult(String betName, Elements betNames, Elements betValues, String matchDetails) {
+	private void getUnderOverResult(String betName, Elements betNames, Elements betValues) {
 		float underOverNum = 0;
 		float under = 1;
 		float over = 1;

@@ -12,6 +12,8 @@ public interface MatchDetailService {
 	
 	List<MatchDetail> findAll();
 	
+	List<Object> findAllIds();
+	
 	List<MatchDetailDTO> findAllHomeMatchWithDate(Long id, Date fromDate, Date toDate);
 	
 	List<MatchDetailDTO> findAllAwayMatchWithDate(Long id, Date fromDate, Date toDate);
