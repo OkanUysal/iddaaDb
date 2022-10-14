@@ -49,9 +49,12 @@ def calculate_success(row):
         return 0
 
 
-def calculate_priority(target_percentage, row):
+def calculate_priority(target_percentage, row, target):
     starter_coefficient = 1000
-    percentage_distance = abs(row['handicapPercentage2'] - target_percentage)
+    if target == 1:
+        percentage_distance = abs(row['handicapPercentage1'] - target_percentage)
+    else:
+        percentage_distance = abs(row['handicapPercentage2'] - target_percentage)
     percentage_diff = math.floor(percentage_distance / 5)
     return starter_coefficient * 1.4**row['order'] * 0.7**percentage_diff
 
@@ -69,7 +72,7 @@ def get_spor_toto_week(week_number):
     df['predicted_winner'] = df.apply(lambda row: calculate_match_result_from_predicted_values(row), axis=1)
     df['real_winner'] = df.apply(lambda row: create_winner_column(row), axis=1)
     df['success'] = df.apply(lambda row: calculate_success(row), axis=1)
-    df['date'] = df['date'].dt.tz_localize(None)
+    #df['date'] = df['date'].dt.tz_localize(None)
     #df.to_excel('spor_toto_predicts.xlsx')
     #print(df, 'Total succes:', df['success'].sum())
     #df['success'].sum()
@@ -83,9 +86,9 @@ def get_home_df(teamId, date, target_home_percentage, target_away_percentage):
     df_temp = df_temp.tail(15)
     df_temp['winner'] = df_temp.apply(lambda row: create_winner_column(row), axis=1)
     df_temp["order"] = [i for i in range(1, 1 + df_temp.shape[0])]
-    df_temp['priority_home'] = df_temp.apply(lambda row: calculate_priority(target_home_percentage, row), axis=1)
+    df_temp['priority_home'] = df_temp.apply(lambda row: calculate_priority(target_home_percentage, row, 1), axis=1)
     df_temp['contribution_home'] = df_temp.apply(lambda row: row['homeMatchScore'] * row['priority_home'], axis=1)
-    df_temp['priority_away'] = df_temp.apply(lambda row: calculate_priority(target_away_percentage, row), axis=1)
+    df_temp['priority_away'] = df_temp.apply(lambda row: calculate_priority(target_away_percentage, row, 2), axis=1)
     df_temp['contribution_away'] = df_temp.apply(lambda row: row['awayMatchScore'] * row['priority_away'], axis=1)
     df_temp.drop(['id', 'teamName'], inplace=True, axis=1)
     return df_temp
@@ -98,9 +101,9 @@ def get_away_df(teamId, date, target_home_percentage, target_away_percentage):
     df_temp = df_temp.tail(15)
     df_temp['winner'] = df_temp.apply(lambda row: create_winner_column(row), axis=1)
     df_temp["order"] = [i for i in range(1, 1 + df_temp.shape[0])]
-    df_temp['priority_home'] = df_temp.apply(lambda row: calculate_priority(target_home_percentage, row), axis=1)
+    df_temp['priority_home'] = df_temp.apply(lambda row: calculate_priority(target_home_percentage, row, 1), axis=1)
     df_temp['contribution_home'] = df_temp.apply(lambda row: row['homeMatchScore'] * row['priority_home'], axis=1)
-    df_temp['priority_away'] = df_temp.apply(lambda row: calculate_priority(target_away_percentage, row), axis=1)
+    df_temp['priority_away'] = df_temp.apply(lambda row: calculate_priority(target_away_percentage, row, 2), axis=1)
     df_temp['contribution_away'] = df_temp.apply(lambda row: row['awayMatchScore'] * row['priority_away'], axis=1)
     df_temp.drop(['id', 'teamName'], inplace=True, axis=1)
     return df_temp
@@ -124,7 +127,7 @@ if __name__ == '__main__':
     #print(predict_score(df_md))
     r = 0
     c = 0
-    for i in range(130, 152):
+    for i in range(130, 151):
         t = get_spor_toto_week(i)
         r += t
         c += 1
