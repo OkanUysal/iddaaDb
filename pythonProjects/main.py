@@ -3,6 +3,14 @@ import pandas as pd
 
 URL = "http://localhost:8080/matchDetailAway/1/2021-01-01/2022-08-01"
 date_static = '2022-01-01'
+draw_gap = 0.3
+percentage_gap = 3
+percentage_priority_coefficient = 0.7
+date_priority_coefficient = 1.4
+match_count_limit = 15
+goal_normalize_coefficient = 100
+normalized_goal_gap = 0.6
+normalized_draw_gap = 25
 
 
 def create_data_frame(url):
@@ -33,10 +41,25 @@ def create_winner_column(row):
         return 'draw'
 
 
+def calculate_percentages_of_predicted_scores(row):
+    min_1, min_2, max_1, max_2 = row['normalized_predicted_goal_home_min'], row['normalized_predicted_goal_away_min'],\
+                                 row['normalized_predicted_goal_home_max'], row['normalized_predicted_goal_away_max']
+    r_1, r_0, r_2 = 0, 0, 0
+    for i in range(min_1, max_1 + 1):
+        for j in range(min_2, max_2 + 1):
+            if i - j > normalized_draw_gap:
+                r_1 += 1
+            elif i - j < -normalized_draw_gap:
+                r_2 += 1
+            else:
+                r_0 += 1
+    return r_1, r_0, r_2
+
+
 def calculate_match_result_from_predicted_values(row):
-    if row['total_predicted_home_score'] - row['total_predicted_away_score'] > 0.3:
+    if row['total_predicted_home_score'] - row['total_predicted_away_score'] > draw_gap:
         return 'home'
-    elif row['total_predicted_home_score'] - row['total_predicted_away_score'] < -0.3:
+    elif row['total_predicted_home_score'] - row['total_predicted_away_score'] < -draw_gap:
         return 'away'
     else:
         return 'draw'
@@ -55,8 +78,8 @@ def calculate_priority(target_percentage, row, target):
         percentage_distance = abs(row['handicapPercentage1'] - target_percentage)
     else:
         percentage_distance = abs(row['handicapPercentage2'] - target_percentage)
-    percentage_diff = math.floor(percentage_distance / 3)
-    return starter_coefficient * 1.4**row['order'] * 0.7**percentage_diff
+    percentage_diff = math.floor(percentage_distance / percentage_gap)
+    return starter_coefficient * date_priority_coefficient**row['order'] * percentage_priority_coefficient**percentage_diff
 
 
 def get_spor_toto_week(week_number):
@@ -69,11 +92,25 @@ def get_spor_toto_week(week_number):
     df['away_predicted_home_score'], df['away_predicted_away_score'] = [x[0] for x in away_tuple_list], [x[1] for x in away_tuple_list]
     df['total_predicted_home_score'] = df.apply(lambda row: (row['home_predicted_home_score'] + row['away_predicted_home_score']) / 2, axis=1)
     df['total_predicted_away_score'] = df.apply(lambda row: (row['home_predicted_away_score'] + row['away_predicted_away_score']) / 2, axis=1)
+    df['normalized_predicted_goal_home_min'] = df.apply(lambda row: round(row['total_predicted_home_score'] * goal_normalize_coefficient *(1-normalized_goal_gap)), axis=1)
+    df['normalized_predicted_goal_home_max'] = df.apply(
+        lambda row: round(row['total_predicted_home_score'] * goal_normalize_coefficient * (1 + normalized_goal_gap)),
+        axis=1)
+    df['normalized_predicted_goal_away_min'] = df.apply(
+        lambda row: round(row['total_predicted_away_score'] * goal_normalize_coefficient * (1 - normalized_goal_gap)),
+        axis=1)
+    df['normalized_predicted_goal_away_max'] = df.apply(
+        lambda row: round(row['total_predicted_away_score'] * goal_normalize_coefficient * (1 + normalized_goal_gap)),
+        axis=1)
+    predicted_percentage_match_score_tuple = [calculate_percentages_of_predicted_scores(row) for index, row in df.iterrows()]
+    df['predicted_percentage_scores_1'] = [x[0] * 100/(x[0] + x[1] + x[2]) for x in predicted_percentage_match_score_tuple]
+    df['predicted_percentage_scores_0'] = [x[1] * 100/(x[0] + x[1] + x[2]) for x in predicted_percentage_match_score_tuple]
+    df['predicted_percentage_scores_2'] = [x[2] * 100/(x[0] + x[1] + x[2]) for x in predicted_percentage_match_score_tuple]
     df['predicted_winner'] = df.apply(lambda row: calculate_match_result_from_predicted_values(row), axis=1)
     df['real_winner'] = df.apply(lambda row: create_winner_column(row), axis=1)
     df['success'] = df.apply(lambda row: calculate_success(row), axis=1)
-    #df['date'] = df['date'].dt.tz_localize(None)
-    #df.to_excel('spor_toto_predicts.xlsx')
+    df['date'] = df['date'].dt.tz_localize(None)
+    df.to_excel('spor_toto_predicts.xlsx')
     #print(df, 'Total succes:', df['success'].sum())
     #df['success'].sum()
     return df['success'].sum()
@@ -83,7 +120,7 @@ def get_home_df(teamId, date, target_home_percentage, target_away_percentage):
     date = date.replace('/', '-')
     match_detail_url = f'http://localhost:8080/matchDetailHome/{teamId}/2021-01-01/{date}'
     df_temp = pd.read_json(match_detail_url)
-    df_temp = df_temp.tail(15)
+    df_temp = df_temp.tail(match_count_limit)
     df_temp['winner'] = df_temp.apply(lambda row: create_winner_column(row), axis=1)
     df_temp["order"] = [i for i in range(1, 1 + df_temp.shape[0])]
     df_temp['priority_home'] = df_temp.apply(lambda row: calculate_priority(target_home_percentage, row, 1), axis=1)
@@ -98,7 +135,7 @@ def get_away_df(teamId, date, target_home_percentage, target_away_percentage):
     date = date.replace('/', '-')
     match_detail_url = f'http://localhost:8080/matchDetailAway/{teamId}/2021-01-01/{date}'
     df_temp = pd.read_json(match_detail_url)
-    df_temp = df_temp.tail(15)
+    df_temp = df_temp.tail(match_count_limit)
     df_temp['winner'] = df_temp.apply(lambda row: create_winner_column(row), axis=1)
     df_temp["order"] = [i for i in range(1, 1 + df_temp.shape[0])]
     df_temp['priority_home'] = df_temp.apply(lambda row: calculate_priority(target_home_percentage, row, 1), axis=1)
@@ -133,7 +170,7 @@ if __name__ == '__main__':
     #print(predict_score(df_md))
     r = 0
     c = 0
-    for i in range(130, 152):
+    for i in range(130, 131):
         t = get_spor_toto_week(i)
         r += t
         c += 1
