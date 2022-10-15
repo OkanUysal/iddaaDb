@@ -55,7 +55,7 @@ def calculate_priority(target_percentage, row, target):
         percentage_distance = abs(row['handicapPercentage1'] - target_percentage)
     else:
         percentage_distance = abs(row['handicapPercentage2'] - target_percentage)
-    percentage_diff = math.floor(percentage_distance / 5)
+    percentage_diff = math.floor(percentage_distance / 3)
     return starter_coefficient * 1.4**row['order'] * 0.7**percentage_diff
 
 
@@ -117,8 +117,14 @@ def predict_match_result_for_home(row):
 
 def predict_match_result_for_away(row):
     row['date'] = pd.to_datetime(row['date']).strftime('%Y/%m/%d')
-    away_team_df = get_away_df(row['homeId'], row['date'], row['handicapPercentage1'], row['handicapPercentage2'])
+    away_team_df = get_away_df(row['awayId'], row['date'], row['handicapPercentage1'], row['handicapPercentage2'])
     return predict_score(away_team_df)
+
+
+def deneme():
+    row = pd.DataFrame(columns=['date', 'homeId', ])
+    match_detail_url = f'http://localhost:8080/matchDetailHome/30/2021-01-01/2022-08-27'
+    df_temp = pd.read_json(match_detail_url)
 
 
 if __name__ == '__main__':
@@ -127,7 +133,7 @@ if __name__ == '__main__':
     #print(predict_score(df_md))
     r = 0
     c = 0
-    for i in range(130, 151):
+    for i in range(130, 152):
         t = get_spor_toto_week(i)
         r += t
         c += 1
