@@ -110,7 +110,7 @@ def get_spor_toto_week(week_number):
     df['real_winner'] = df.apply(lambda row: create_winner_column(row), axis=1)
     df['success'] = df.apply(lambda row: calculate_success(row), axis=1)
     df['date'] = df['date'].dt.tz_localize(None)
-    df.to_excel('spor_toto_predicts.xlsx')
+    df.to_excel('output/spor_toto_predicts.xlsx')
     #print(df, 'Total succes:', df['success'].sum())
     #df['success'].sum()
     return df['success'].sum()
