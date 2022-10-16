@@ -103,13 +103,15 @@ def get_spor_toto_week(week_number):
         lambda row: round(row['total_predicted_away_score'] * goal_normalize_coefficient * (1 + normalized_goal_gap)),
         axis=1)
     predicted_percentage_match_score_tuple = [calculate_percentages_of_predicted_scores(row) for index, row in df.iterrows()]
-    df['predicted_percentage_scores_1'] = [x[0] * 100/(x[0] + x[1] + x[2]) for x in predicted_percentage_match_score_tuple]
-    df['predicted_percentage_scores_0'] = [x[1] * 100/(x[0] + x[1] + x[2]) for x in predicted_percentage_match_score_tuple]
-    df['predicted_percentage_scores_2'] = [x[2] * 100/(x[0] + x[1] + x[2]) for x in predicted_percentage_match_score_tuple]
+    df['pps1'] = [x[0] * 100/(x[0] + x[1] + x[2]) for x in predicted_percentage_match_score_tuple]
+    df['pps0'] = [x[1] * 100/(x[0] + x[1] + x[2]) for x in predicted_percentage_match_score_tuple]
+    df['pps2'] = [x[2] * 100/(x[0] + x[1] + x[2]) for x in predicted_percentage_match_score_tuple]
     df['predicted_winner'] = df.apply(lambda row: calculate_match_result_from_predicted_values(row), axis=1)
     df['real_winner'] = df.apply(lambda row: create_winner_column(row), axis=1)
     df['success'] = df.apply(lambda row: calculate_success(row), axis=1)
     df['date'] = df['date'].dt.tz_localize(None)
+    df.drop(['id', 'weekNumber', 'date', 'home_predicted_home_score', 'home_predicted_away_score', 'away_predicted_home_score', 'away_predicted_away_score',
+        'normalized_predicted_goal_home_min', 'normalized_predicted_goal_home_max', 'normalized_predicted_goal_away_min', 'normalized_predicted_goal_away_max'], inplace=True, axis=1)
     df.to_excel('output/spor_toto_predicts.xlsx')
     #print(df, 'Total succes:', df['success'].sum())
     #df['success'].sum()
