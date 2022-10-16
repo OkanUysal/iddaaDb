@@ -1,5 +1,6 @@
 import math
 import pandas as pd
+import numpy as np
 
 URL = "http://localhost:8080/matchDetailAway/1/2021-01-01/2022-08-01"
 date_static = '2022-01-01'
@@ -11,6 +12,7 @@ match_count_limit = 15
 goal_normalize_coefficient = 100
 normalized_goal_gap = 0.6
 normalized_draw_gap = 25
+money_limit = 128 * 2
 
 
 def create_data_frame(url):
@@ -34,11 +36,11 @@ def predict_score(df):
 
 def create_winner_column(row):
     if row['homeMatchScore'] > row['awayMatchScore']:
-        return 'home'
+        return '1'
     elif row['homeMatchScore'] < row['awayMatchScore']:
-        return 'away'
+        return '2'
     else:
-        return 'draw'
+        return '0'
 
 
 def calculate_percentages_of_predicted_scores(row):
@@ -66,7 +68,7 @@ def calculate_match_result_from_predicted_values(row):
 
 
 def calculate_success(row):
-    if row['predicted_winner'] == row['real_winner']:
+    if row['real_winner'] in row['toto_results']:
         return 1
     else:
         return 0
@@ -107,15 +109,85 @@ def get_spor_toto_week(week_number):
     df['pps0'] = [x[1] * 100/(x[0] + x[1] + x[2]) for x in predicted_percentage_match_score_tuple]
     df['pps2'] = [x[2] * 100/(x[0] + x[1] + x[2]) for x in predicted_percentage_match_score_tuple]
     df['predicted_winner'] = df.apply(lambda row: calculate_match_result_from_predicted_values(row), axis=1)
-    df['real_winner'] = df.apply(lambda row: create_winner_column(row), axis=1)
-    df['success'] = df.apply(lambda row: calculate_success(row), axis=1)
     df['date'] = df['date'].dt.tz_localize(None)
     df.drop(['id', 'weekNumber', 'date', 'home_predicted_home_score', 'home_predicted_away_score', 'away_predicted_home_score', 'away_predicted_away_score',
         'normalized_predicted_goal_home_min', 'normalized_predicted_goal_home_max', 'normalized_predicted_goal_away_min', 'normalized_predicted_goal_away_max'], inplace=True, axis=1)
+
+    combinations = find_best_combination()
+    max_chosen_matches, max_percentage_of_toto = find_best_sport_toto(df, combinations)
+    max_chosen_matches = sorted(max_chosen_matches, key=lambda l: (l[2]))
+
+    new_column_list = []
+    for index, row in df.iterrows():
+        temp_arr = [[row['pps1'], 1], [row['pps0'], 0], [row['pps2'], 2]]
+        temp_arr.sort(reverse=True)
+        s = ''
+        if max_chosen_matches[index][1] == 1:
+            s = f'{temp_arr[0][1]}'
+        elif max_chosen_matches[index][1] == 2:
+            s = f'{temp_arr[0][1]} - {temp_arr[1][1]}'
+        else:
+            s = f'{temp_arr[0][1]} - {temp_arr[1][1]} - {temp_arr[2][1]}'
+        new_column_list.append(s)
+    df['toto_results'] = new_column_list
+    df['real_winner'] = df.apply(lambda row: create_winner_column(row), axis=1)
+    df['success'] = df.apply(lambda row: calculate_success(row), axis=1)
     df.to_excel('output/spor_toto_predicts.xlsx')
-    #print(df, 'Total succes:', df['success'].sum())
+    print('Total succes:', df['success'].sum(), len(df.index))
     #df['success'].sum()
-    return df['success'].sum()
+    return df['success'].sum(), len(df.index)
+
+
+def find_best_sport_toto(df, combinations):
+    max_percentage_of_toto = 0
+    max_chosen_matches = []
+    for c in combinations:
+        chosen_matches = calculate_triple_double_arr(df, c[1], c[2])
+        temp_percentage_of_toto = 1
+        for i in range(len(chosen_matches)):
+            temp_percentage_of_toto *= chosen_matches[i][0] / 100
+        print(f'2**{c[1]}, 3**{c[2]}, {temp_percentage_of_toto}')
+        if temp_percentage_of_toto > max_percentage_of_toto:
+            max_percentage_of_toto = temp_percentage_of_toto
+            max_chosen_matches = chosen_matches.copy()
+    return max_chosen_matches, max_percentage_of_toto
+
+
+def calculate_triple_double_arr(df, n, m):
+    efficiency_arr = []
+    result_arr = []
+    for index, row in df.iterrows():
+        temp_arr = [row['pps1'], row['pps0'], row['pps2']]
+        temp_arr.sort(reverse=True)
+        double_util_temp = ((temp_arr[0]+temp_arr[1])/temp_arr[0])/2
+        triple_util_temp = (100/temp_arr[0])/3
+        best_util_temp = max(double_util_temp, triple_util_temp)
+        efficiency_arr.append([best_util_temp, temp_arr[0], double_util_temp, triple_util_temp, index])
+    efficiency_arr.sort(reverse=True)
+    for i in range(15):
+        if n == 0:
+            efficiency_arr = sorted(efficiency_arr, key=lambda l: (l[3]), reverse=True)
+            result_arr.extend([[efficiency_arr[a][3] * 3 * efficiency_arr[a][1], 3, efficiency_arr[a][4]] for a in range(m)])
+            efficiency_arr = efficiency_arr[m:]
+            efficiency_arr = sorted(efficiency_arr, key=lambda l: (l[1]), reverse=True)
+            result_arr.extend([[efficiency_arr[a][1], 1, efficiency_arr[a][4]] for a in range(len(efficiency_arr))])
+            return result_arr
+        if m == 0:
+            efficiency_arr = sorted(efficiency_arr, key=lambda l: (l[2]), reverse=True)
+            result_arr.extend([[efficiency_arr[a][2] * 2 * efficiency_arr[a][1], 2, efficiency_arr[a][4]] for a in range(n)])
+            efficiency_arr = efficiency_arr[n:]
+            efficiency_arr = sorted(efficiency_arr, key=lambda l: (l[1]), reverse=True)
+            result_arr.extend([[efficiency_arr[a][1], 1, efficiency_arr[a][4]] for a in range(len(efficiency_arr))])
+            return result_arr
+        if efficiency_arr[0][0] == efficiency_arr[0][2]:
+            result_arr.append([efficiency_arr[0][2] * 2 * efficiency_arr[0][1], 2, efficiency_arr[0][4]])
+            n -= 1
+        else:
+            result_arr.append([efficiency_arr[0][3] * 3 * efficiency_arr[0][1], 3, efficiency_arr[0][4]])
+            m -=1
+        efficiency_arr = efficiency_arr[1:]
+
+    return result_arr
 
 
 def get_home_df(teamId, date, target_home_percentage, target_away_percentage):
@@ -166,18 +238,37 @@ def deneme():
     df_temp = pd.read_json(match_detail_url)
 
 
+def find_best_combination():
+    combination_list = []
+    for i in range(15):
+        for j in range(15):
+            if 2**i * 3**j > money_limit:
+                break
+            combination_list.append([2**i * 3**j, i, j])
+    combination_list.sort(reverse=True)
+    for i in range(len(combination_list)):
+        if combination_list[i][0] <= 0.75 * combination_list[0][0]:
+            return combination_list[0:i]
+
+    return 0
+
+
 if __name__ == '__main__':
     pd.set_option('display.max_columns', None)
     #df_md = create_data_frame(URL)
     #print(predict_score(df_md))
     r = 0
     c = 0
-    for i in range(130, 131):
-        t = get_spor_toto_week(i)
+    for i in range(146, 147):
+        t, mc = get_spor_toto_week(i)
         r += t
-        c += 1
+        c += mc
         print(i, t)
-    print(r/c)
+    print(f'avg: {r / c}')
+    """r = 0
+        for i in range(130, 152):
+        print(f'Week Number: {i}')
+        get_spor_toto_week(i)"""
 
     """df_md['date'] = df_md['date'].dt.tz_localize(None)
     result_df = predict_future(df_md, ['homeMatchScore', 'awayMatchScore'], ['handicapPercentage1', 'handicapPercentageX', 'handicapPercentage2'])
