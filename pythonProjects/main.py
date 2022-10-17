@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 URL = "http://localhost:8080/matchDetailAway/1/2021-01-01/2022-08-01"
-date_static = '2022-01-01'
+date_static = '2021-06-06'
 draw_gap = 0.3
 percentage_gap = 3
 percentage_priority_coefficient = 0.7
@@ -13,6 +13,7 @@ goal_normalize_coefficient = 100
 normalized_goal_gap = 0.6
 normalized_draw_gap = 25
 money_limit = 128 * 2
+learning_mode = 1
 
 
 def create_data_frame(url):
@@ -132,8 +133,10 @@ def get_spor_toto_week(week_number):
     df['toto_results'] = new_column_list
     df['real_winner'] = df.apply(lambda row: create_winner_column(row), axis=1)
     df['success'] = df.apply(lambda row: calculate_success(row), axis=1)
-    df.to_excel('output/spor_toto_predicts.xlsx')
-    print('Total succes:', df['success'].sum(), len(df.index))
+    if learning_mode != 1:
+        df.to_excel('output/spor_toto_predicts.xlsx')
+    if learning_mode != 1:
+        print('Total succes:', df['success'].sum(), len(df.index))
     #df['success'].sum()
     return df['success'].sum(), len(df.index)
 
@@ -146,7 +149,8 @@ def find_best_sport_toto(df, combinations):
         temp_percentage_of_toto = 1
         for i in range(len(chosen_matches)):
             temp_percentage_of_toto *= chosen_matches[i][0] / 100
-        print(f'2**{c[1]}, 3**{c[2]}, {temp_percentage_of_toto}')
+        if learning_mode != 1:
+            print(f'2**{c[1]}, 3**{c[2]}, {temp_percentage_of_toto}')
         if temp_percentage_of_toto > max_percentage_of_toto:
             max_percentage_of_toto = temp_percentage_of_toto
             max_chosen_matches = chosen_matches.copy()
@@ -252,18 +256,18 @@ def find_best_combination():
 
     return 0
 
-
-if __name__ == '__main__':
+def predict_spor_toto():
     pd.set_option('display.max_columns', None)
     #df_md = create_data_frame(URL)
     #print(predict_score(df_md))
     r = 0
     c = 0
-    for i in range(146, 147):
+    for i in range(120, 152):
         t, mc = get_spor_toto_week(i)
         r += t
         c += mc
-        print(i, t)
+        if learning_mode != 1:
+            print(i, t)
     print(f'avg: {r / c}')
     """r = 0
         for i in range(130, 152):
@@ -274,3 +278,54 @@ if __name__ == '__main__':
     result_df = predict_future(df_md, ['homeMatchScore', 'awayMatchScore'], ['handicapPercentage1', 'handicapPercentageX', 'handicapPercentage2'])
     winner_df = predict_future(df_md, ['winner'], ['handicapPercentage1', 'handicapPercentageX', 'handicapPercentage2', 'homeMatchScore', 'awayMatchScore'])
     """
+
+    return r / c
+
+
+if __name__ == '__main__':
+    if learning_mode != 1:
+        predict_spor_toto()
+    else:
+        learning_arr = []
+        for i in range(15, 11, -2):
+            print('i:' , i)
+            match_count_limit = i
+            for j in range(2, 3):
+                print('j:' , j)
+                percentage_gap = j
+                for k in np.arange (0.9, 0.95, 0.1):
+                    print('k:' , k)
+                    percentage_priority_coefficient = k
+                    for l in np.arange(1.5, 1.65, 0.1):
+                        date_priority_coefficient = l
+                        for m in range(80, 100, 10):
+                            goal_normalize_coefficient = m
+                            for n in np.arange(0.5, 0.55, 0.1):
+                                normalized_goal_gap = n
+                                for o in range(15, 25, 5):
+                                    normalized_draw_gap = o
+                                    ret = predict_spor_toto()
+                                    learning_arr.append([ret, i, j, k, l, m, n, o])
+        #learning_arr.sort()
+        #learning_arr=learning_arr[::-1]
+
+        learning_arr = sorted(learning_arr, key=lambda l: (l[0]), reverse=True)
+        
+        for i in range(10):
+            print(learning_arr[i])
+        print()
+        for i in range(10):
+            print(learning_arr[len(learning_arr) - 1 -i])
+            
+        
+
+
+"""
+percentage_gap = 3 + j (3, 6)
+percentage_priority_coefficient = 0.7 + k (0.5, 0.8)
+date_priority_coefficient = 1.4 + l (1.2, 1.6)
+match_count_limit = 15 + i (15, 7)
+goal_normalize_coefficient = 100 + m (80, 120)
+normalized_goal_gap = 0.6 + n (0.4, 0.7)
+normalized_draw_gap = 25 + o (15, 30)
+"""
