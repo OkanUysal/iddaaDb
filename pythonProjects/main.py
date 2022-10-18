@@ -7,13 +7,14 @@ draw_gap = 0.3
 percentage_gap = 3
 percentage_priority_coefficient = 0.7
 date_priority_coefficient = 1.4
-match_count_limit = 15
+match_count_limit = 5
 goal_normalize_coefficient = 100
 normalized_goal_gap = 0.6
 normalized_draw_gap = 25
 money_limit = 128 * 2
-learning_mode = 1
-next_week_mode = 1
+learning_mode = 0
+next_week_mode = 0
+side_coefficient = 0.5
 
 
 def predict_score(df):
@@ -71,7 +72,7 @@ def calculate_priority(target_percentage, row, target):
     else:
         percentage_distance = abs(row['handicapPercentage2'] - target_percentage)
     percentage_diff = math.floor(percentage_distance / percentage_gap)
-    return starter_coefficient * date_priority_coefficient**row['order'] * percentage_priority_coefficient**percentage_diff
+    return starter_coefficient * date_priority_coefficient**row['order'] * percentage_priority_coefficient**percentage_diff * row["side_coefficient"]
 
 
 def get_spor_toto_week(week_number):
@@ -207,9 +208,16 @@ def calculate_triple_double_arr(df, n, m):
 
 def get_home_df(teamId, date, target_home_percentage, target_away_percentage):
     date = date.replace('/', '-')
-    match_detail_url = f'http://localhost:8080/matchDetailHome/{teamId}/2021-01-01/{date}'
-    df_temp = pd.read_json(match_detail_url)
-    df_temp = df_temp.tail(match_count_limit)
+    match_detail_url_home = f'http://localhost:8080/matchDetailHome/{teamId}/2021-01-01/{date}'
+    match_detail_url_away = f'http://localhost:8080/matchDetailAway/{teamId}/2021-01-01/{date}'
+    df_temp_home = pd.read_json(match_detail_url_home)
+    df_temp_away = pd.read_json(match_detail_url_away)
+    df_temp_home = df_temp_home.tail(match_count_limit)
+    df_temp_away = df_temp_away.tail(match_count_limit)
+    df_temp_home["side_coefficient"] = 1
+    df_temp_away["side_coefficient"] = side_coefficient
+    df_temp = pd.concat([df_temp_home, df_temp_away])
+    df_temp.sort_values(by=['date'], inplace=True)
     df_temp['winner'] = df_temp.apply(lambda row: create_winner_column(row), axis=1)
     df_temp["order"] = [i for i in range(1, 1 + df_temp.shape[0])]
     df_temp['priority_home'] = df_temp.apply(lambda row: calculate_priority(target_home_percentage, row, 1), axis=1)
@@ -222,9 +230,16 @@ def get_home_df(teamId, date, target_home_percentage, target_away_percentage):
 
 def get_away_df(teamId, date, target_home_percentage, target_away_percentage):
     date = date.replace('/', '-')
-    match_detail_url = f'http://localhost:8080/matchDetailAway/{teamId}/2021-01-01/{date}'
-    df_temp = pd.read_json(match_detail_url)
-    df_temp = df_temp.tail(match_count_limit)
+    match_detail_url_home = f'http://localhost:8080/matchDetailHome/{teamId}/2021-01-01/{date}'
+    match_detail_url_away = f'http://localhost:8080/matchDetailAway/{teamId}/2021-01-01/{date}'
+    df_temp_home = pd.read_json(match_detail_url_home)
+    df_temp_away = pd.read_json(match_detail_url_away)
+    df_temp_home = df_temp_home.tail(match_count_limit)
+    df_temp_away = df_temp_away.tail(match_count_limit)
+    df_temp_home["side_coefficient"] = side_coefficient
+    df_temp_away["side_coefficient"] = 1
+    df_temp = pd.concat([df_temp_home, df_temp_away])
+    df_temp.sort_values(by=['date'], inplace=True)
     df_temp['winner'] = df_temp.apply(lambda row: create_winner_column(row), axis=1)
     df_temp["order"] = [i for i in range(1, 1 + df_temp.shape[0])]
     df_temp['priority_home'] = df_temp.apply(lambda row: calculate_priority(target_home_percentage, row, 1), axis=1)
@@ -296,8 +311,7 @@ def predict_spor_toto():
 
 if __name__ == '__main__':
     if next_week_mode == 1:
-        #get_spor_toto_week(153)
-        get_away_df(11, '2022-10-28', 54, 21)
+        get_spor_toto_week(153)
     else:
         if learning_mode != 1:
             predict_spor_toto()
