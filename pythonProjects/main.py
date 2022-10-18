@@ -2,7 +2,6 @@ import math
 import pandas as pd
 import numpy as np
 
-URL = "http://localhost:8080/matchDetailAway/1/2021-01-01/2022-08-01"
 date_static = '2021-06-06'
 draw_gap = 0.3
 percentage_gap = 3
@@ -14,17 +13,7 @@ normalized_goal_gap = 0.6
 normalized_draw_gap = 25
 money_limit = 128 * 2
 learning_mode = 1
-
-
-def create_data_frame(url):
-    df_temp = pd.read_json(URL)
-    df_temp['winner'] = df_temp.apply(lambda row: create_winner_column(row), axis=1)
-    df_temp["order"] = [i for i in range(1, 1 + df_temp.shape[0])]
-    df_temp['priority'] = df_temp.apply(lambda row: calculate_priority(54.286045, row), axis=1)
-    df_temp['contribution'] = df_temp.apply(lambda row: row['awayMatchScore'] * row['priority'], axis=1)
-    print(df_temp)
-    df_temp.drop(['id', 'teamName'], inplace=True, axis=1)
-    return df_temp
+next_week_mode = 1
 
 
 def predict_score(df):
@@ -86,8 +75,11 @@ def calculate_priority(target_percentage, row, target):
 
 
 def get_spor_toto_week(week_number):
-    spor_toto_url = f'http://localhost:8080/sporTotoWeek/{week_number}'
-    #spor_toto_url = f'http://localhost:8080/currentSporTotoList/{week_number}'
+    spor_toto_url = ''
+    if next_week_mode:
+        spor_toto_url = f'http://localhost:8080/currentSporTotoList/{week_number}'
+    else:
+        spor_toto_url = f'http://localhost:8080/sporTotoWeek/{week_number}'
     df = pd.read_json(spor_toto_url)
     home_tuple_list = [predict_match_result_for_home(row) for index, row in df.iterrows()]
     away_tuple_list = [predict_match_result_for_away(row) for index, row in df.iterrows()]
@@ -113,32 +105,51 @@ def get_spor_toto_week(week_number):
     df['date'] = df['date'].dt.tz_localize(None)
     df.drop(['id', 'weekNumber', 'date', 'home_predicted_home_score', 'home_predicted_away_score', 'away_predicted_home_score', 'away_predicted_away_score',
         'normalized_predicted_goal_home_min', 'normalized_predicted_goal_home_max', 'normalized_predicted_goal_away_min', 'normalized_predicted_goal_away_max'], inplace=True, axis=1)
-
     combinations = find_best_combination()
-    max_chosen_matches, max_percentage_of_toto = find_best_sport_toto(df, combinations)
-    max_chosen_matches = sorted(max_chosen_matches, key=lambda l: (l[2]))
+    if next_week_mode:
+        with pd.ExcelWriter("output/spor_toto_next_week_predicts.xlsx") as writer:
+            for c in combinations:
+                max_chosen_matches, max_percentage_of_toto = find_best_sport_toto(df, [c])
+                max_chosen_matches = sorted(max_chosen_matches, key=lambda l: (l[2]))
+                new_column_list = []
+                for index, row in df.iterrows():
+                    temp_arr = [[row['pps1'], 1], [row['pps0'], 0], [row['pps2'], 2]]
+                    temp_arr.sort(reverse=True)
+                    s = ''
+                    if max_chosen_matches[index][1] == 1:
+                        s = f'{temp_arr[0][1]}'
+                    elif max_chosen_matches[index][1] == 2:
+                        s = f'{temp_arr[0][1]} - {temp_arr[1][1]}'
+                    else:
+                        s = f'{temp_arr[0][1]} - {temp_arr[1][1]} - {temp_arr[2][1]}'
+                    new_column_list.append(s)
+                df['toto_results'] = new_column_list
+                df.to_excel(writer, sheet_name=f'cost_{c[0]}_i_{c[1]}_j_{c[2]}', index=False)
+        return 0, len(df.index)
+    else:
+        max_chosen_matches, max_percentage_of_toto = find_best_sport_toto(df, combinations)
+        max_chosen_matches = sorted(max_chosen_matches, key=lambda l: (l[2]))
 
-    new_column_list = []
-    for index, row in df.iterrows():
-        temp_arr = [[row['pps1'], 1], [row['pps0'], 0], [row['pps2'], 2]]
-        temp_arr.sort(reverse=True)
-        s = ''
-        if max_chosen_matches[index][1] == 1:
-            s = f'{temp_arr[0][1]}'
-        elif max_chosen_matches[index][1] == 2:
-            s = f'{temp_arr[0][1]} - {temp_arr[1][1]}'
-        else:
-            s = f'{temp_arr[0][1]} - {temp_arr[1][1]} - {temp_arr[2][1]}'
-        new_column_list.append(s)
-    df['toto_results'] = new_column_list
-    df['real_winner'] = df.apply(lambda row: create_winner_column(row), axis=1)
-    df['success'] = df.apply(lambda row: calculate_success(row), axis=1)
-    if learning_mode != 1:
-        df.to_excel('output/spor_toto_predicts.xlsx')
-    if learning_mode != 1:
-        print('Total succes:', df['success'].sum(), len(df.index))
-    #df['success'].sum()
-    return df['success'].sum(), len(df.index)
+        new_column_list = []
+        for index, row in df.iterrows():
+            temp_arr = [[row['pps1'], 1], [row['pps0'], 0], [row['pps2'], 2]]
+            temp_arr.sort(reverse=True)
+            s = ''
+            if max_chosen_matches[index][1] == 1:
+                s = f'{temp_arr[0][1]}'
+            elif max_chosen_matches[index][1] == 2:
+                s = f'{temp_arr[0][1]} - {temp_arr[1][1]}'
+            else:
+                s = f'{temp_arr[0][1]} - {temp_arr[1][1]} - {temp_arr[2][1]}'
+            new_column_list.append(s)
+        df['toto_results'] = new_column_list
+        df['real_winner'] = df.apply(lambda row: create_winner_column(row), axis=1)
+        df['success'] = df.apply(lambda row: calculate_success(row), axis=1)
+        if learning_mode != 1:
+            df.to_excel('output/spor_toto_predicts.xlsx')
+        if learning_mode != 1:
+            print('Total succes:', df['success'].sum(), len(df.index))
+        return df['success'].sum(), len(df.index)
 
 
 def find_best_sport_toto(df, combinations):
@@ -256,6 +267,7 @@ def find_best_combination():
 
     return 0
 
+
 def predict_spor_toto():
     pd.set_option('display.max_columns', None)
     #df_md = create_data_frame(URL)
@@ -283,39 +295,43 @@ def predict_spor_toto():
 
 
 if __name__ == '__main__':
-    if learning_mode != 1:
-        predict_spor_toto()
+    if next_week_mode == 1:
+        #get_spor_toto_week(153)
+        get_away_df(11, '2022-10-28', 54, 21)
     else:
-        learning_arr = []
-        for i in range(15, 11, -2):
-            print('i:' , i)
-            match_count_limit = i
-            for j in range(2, 3):
-                print('j:' , j)
-                percentage_gap = j
-                for k in np.arange (0.9, 0.95, 0.1):
-                    print('k:' , k)
-                    percentage_priority_coefficient = k
-                    for l in np.arange(1.5, 1.65, 0.1):
-                        date_priority_coefficient = l
-                        for m in range(80, 100, 10):
-                            goal_normalize_coefficient = m
-                            for n in np.arange(0.5, 0.55, 0.1):
-                                normalized_goal_gap = n
-                                for o in range(15, 25, 5):
-                                    normalized_draw_gap = o
-                                    ret = predict_spor_toto()
-                                    learning_arr.append([ret, i, j, k, l, m, n, o])
-        #learning_arr.sort()
-        #learning_arr=learning_arr[::-1]
+        if learning_mode != 1:
+            predict_spor_toto()
+        else:
+            learning_arr = []
+            for i in range(15, 11, -2):
+                print('i:' , i)
+                match_count_limit = i
+                for j in range(2, 3):
+                    print('j:' , j)
+                    percentage_gap = j
+                    for k in np.arange (0.9, 0.95, 0.1):
+                        print('k:' , k)
+                        percentage_priority_coefficient = k
+                        for l in np.arange(1.5, 1.65, 0.1):
+                            date_priority_coefficient = l
+                            for m in range(80, 100, 10):
+                                goal_normalize_coefficient = m
+                                for n in np.arange(0.5, 0.55, 0.1):
+                                    normalized_goal_gap = n
+                                    for o in range(15, 25, 5):
+                                        normalized_draw_gap = o
+                                        ret = predict_spor_toto()
+                                        learning_arr.append([ret, i, j, k, l, m, n, o])
+            #learning_arr.sort()
+            #learning_arr=learning_arr[::-1]
 
-        learning_arr = sorted(learning_arr, key=lambda l: (l[0]), reverse=True)
-        
-        for i in range(10):
-            print(learning_arr[i])
-        print()
-        for i in range(10):
-            print(learning_arr[len(learning_arr) - 1 -i])
+            learning_arr = sorted(learning_arr, key=lambda l: (l[0]), reverse=True)
+
+            for i in range(10):
+                print(learning_arr[i])
+            print()
+            for i in range(10):
+                print(learning_arr[len(learning_arr) - 1 -i])
             
         
 
