@@ -4,17 +4,18 @@ import numpy as np
 
 date_static = '2021-06-06'
 draw_gap = 0.3
-percentage_gap = 3
-percentage_priority_coefficient = 0.7
+percentage_gap = 4
+percentage_priority_coefficient = 0.8
 date_priority_coefficient = 1.4
-match_count_limit = 5
+match_count_limit = 7
 goal_normalize_coefficient = 100
 normalized_goal_gap = 0.6
 normalized_draw_gap = 25
-money_limit = 128 * 2
+money_limit = 256 * 2
 learning_mode = 0
-next_week_mode = 0
-side_coefficient = 0.5
+next_week_mode = 1
+side_coefficient = 0.4
+debug_mode = 0
 
 
 def predict_score(df):
@@ -22,6 +23,8 @@ def predict_score(df):
     total_home_priority = df['priority_home'].sum()
     total_away_contribution = df['contribution_away'].sum()
     total_away_priority = df['priority_away'].sum()
+    if debug_mode == 1:
+        print("predict: ", total_home_contribution/total_home_priority, "  -  ", total_away_contribution/total_away_priority)
     return total_home_contribution/total_home_priority, total_away_contribution/total_away_priority
 
 
@@ -216,6 +219,7 @@ def get_home_df(teamId, date, target_home_percentage, target_away_percentage):
     df_temp_away = df_temp_away.tail(match_count_limit)
     df_temp_home["side_coefficient"] = 1
     df_temp_away["side_coefficient"] = side_coefficient
+    df_temp_away.rename(columns = {'homeMatchScore':'awayMatchScore', 'awayMatchScore':'homeMatchScore'}, inplace = True)
     df_temp = pd.concat([df_temp_home, df_temp_away])
     df_temp.sort_values(by=['date'], inplace=True)
     df_temp['winner'] = df_temp.apply(lambda row: create_winner_column(row), axis=1)
@@ -225,6 +229,12 @@ def get_home_df(teamId, date, target_home_percentage, target_away_percentage):
     df_temp['priority_away'] = df_temp.apply(lambda row: calculate_priority(target_away_percentage, row, 2), axis=1)
     df_temp['contribution_away'] = df_temp.apply(lambda row: row['awayMatchScore'] * row['priority_away'], axis=1)
     df_temp.drop(['id', 'teamName'], inplace=True, axis=1)
+    if debug_mode == 1:
+        print()
+        print()
+        print("Home Team Id: ", teamId)
+        for index, row in df_temp.iterrows():
+            print(row['homeMatchScore'], "-", row['awayMatchScore'], "- side: ", row['side_coefficient'])
     return df_temp
 
 
@@ -237,6 +247,7 @@ def get_away_df(teamId, date, target_home_percentage, target_away_percentage):
     df_temp_home = df_temp_home.tail(match_count_limit)
     df_temp_away = df_temp_away.tail(match_count_limit)
     df_temp_home["side_coefficient"] = side_coefficient
+    df_temp_home.rename(columns = {'homeMatchScore':'awayMatchScore', 'awayMatchScore':'homeMatchScore'}, inplace = True)
     df_temp_away["side_coefficient"] = 1
     df_temp = pd.concat([df_temp_home, df_temp_away])
     df_temp.sort_values(by=['date'], inplace=True)
@@ -247,6 +258,12 @@ def get_away_df(teamId, date, target_home_percentage, target_away_percentage):
     df_temp['priority_away'] = df_temp.apply(lambda row: calculate_priority(target_away_percentage, row, 2), axis=1)
     df_temp['contribution_away'] = df_temp.apply(lambda row: row['awayMatchScore'] * row['priority_away'], axis=1)
     df_temp.drop(['id', 'teamName'], inplace=True, axis=1)
+    if debug_mode == 1:
+        print()
+        print()
+        print("Away Team Id: ", teamId)
+        for index, row in df_temp.iterrows():
+            print(row['homeMatchScore'], "-", row['awayMatchScore'], "- side: ", row['side_coefficient'])
     return df_temp
 
 
@@ -289,7 +306,7 @@ def predict_spor_toto():
     #print(predict_score(df_md))
     r = 0
     c = 0
-    for i in range(120, 152):
+    for i in range(141, 154):
         t, mc = get_spor_toto_week(i)
         r += t
         c += mc
@@ -311,7 +328,7 @@ def predict_spor_toto():
 
 if __name__ == '__main__':
     if next_week_mode == 1:
-        get_spor_toto_week(153)
+        get_spor_toto_week(154)
     else:
         if learning_mode != 1:
             predict_spor_toto()

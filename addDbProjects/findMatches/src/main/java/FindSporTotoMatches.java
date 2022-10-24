@@ -16,7 +16,7 @@ public class FindSporTotoMatches {
 
 	public static void main(String[] args) {
 		try {
-			for (int i = 150; i < 152; i++) {
+			for (int i = 153; i < 154; i++) {
 				Document doc = Jsoup.connect("https://www.nesine.com/sportoto/mac-sonuclari?pNo=" + i + "_1").get();
 
 				Elements table = doc.select("div.table-responsive");

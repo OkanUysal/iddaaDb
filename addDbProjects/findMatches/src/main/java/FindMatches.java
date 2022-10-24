@@ -10,8 +10,8 @@ import com.google.gson.JsonParser;
 
 public class FindMatches {
 
-	public static String startDate = "01/06/2022";
-	public static String endDate = "13/10/2022";
+	public static String startDate = "20/10/2022";
+	public static String endDate = "25/10/2022";
 
 	public static void main(String[] args) {
 

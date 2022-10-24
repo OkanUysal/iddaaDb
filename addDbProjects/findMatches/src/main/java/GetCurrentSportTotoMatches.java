@@ -9,7 +9,7 @@ import com.google.gson.JsonParser;
 
 public class GetCurrentSportTotoMatches {
 	
-	private static final int weekNumber = 152;
+	private static final int weekNumber = 154;
 
 	public static void main(String[] args) {
 		try {
