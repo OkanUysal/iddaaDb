@@ -4,17 +4,17 @@ import numpy as np
 
 date_static = '2021-06-06'
 draw_gap = 0.3
-percentage_gap = 4
+percentage_gap = 5
 percentage_priority_coefficient = 0.8
 date_priority_coefficient = 1.4
-match_count_limit = 7
+match_count_limit = 9
 goal_normalize_coefficient = 100
-normalized_goal_gap = 0.6
-normalized_draw_gap = 25
-money_limit = 256 * 2
+normalized_goal_gap = 0.5
+normalized_draw_gap = 20
+money_limit = 512 * 2
 learning_mode = 0
 next_week_mode = 1
-side_coefficient = 0.4
+side_coefficient = 0.7
 debug_mode = 0
 
 
@@ -294,7 +294,7 @@ def find_best_combination():
             combination_list.append([2**i * 3**j, i, j])
     combination_list.sort(reverse=True)
     for i in range(len(combination_list)):
-        if combination_list[i][0] <= 0.75 * combination_list[0][0]:
+        if combination_list[i][0] <= 0.65 * combination_list[0][0]:
             return combination_list[0:i]
 
     return 0
@@ -334,25 +334,27 @@ if __name__ == '__main__':
             predict_spor_toto()
         else:
             learning_arr = []
-            for i in range(15, 11, -2):
+            for i in range(9, 6, -1):
                 print('i:' , i)
                 match_count_limit = i
-                for j in range(2, 3):
+                for j in range(3, 6):
                     print('j:' , j)
                     percentage_gap = j
-                    for k in np.arange (0.9, 0.95, 0.1):
+                    for k in np.arange (0.7, 0.95, 0.1):
                         print('k:' , k)
                         percentage_priority_coefficient = k
-                        for l in np.arange(1.5, 1.65, 0.1):
+                        for l in np.arange(1.4, 1.65, 0.1):
                             date_priority_coefficient = l
-                            for m in range(80, 100, 10):
+                            for m in range(90, 110, 10):
                                 goal_normalize_coefficient = m
-                                for n in np.arange(0.5, 0.55, 0.1):
+                                for n in np.arange(0.5, 0.65, 0.1):
                                     normalized_goal_gap = n
-                                    for o in range(15, 25, 5):
+                                    for o in range(20, 30, 5):
                                         normalized_draw_gap = o
-                                        ret = predict_spor_toto()
-                                        learning_arr.append([ret, i, j, k, l, m, n, o])
+                                        for p in np.arange(0.3, 0.75, 0.1):
+                                            side_coefficient = p
+                                            ret = predict_spor_toto()
+                                            learning_arr.append([ret, i, j, k, l, m, n, o, p])
             #learning_arr.sort()
             #learning_arr=learning_arr[::-1]
 
