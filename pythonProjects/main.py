@@ -13,7 +13,7 @@ normalized_goal_gap = 0.5
 normalized_draw_gap = 20
 money_limit = 512 * 2
 learning_mode = 0
-next_week_mode = 1
+next_week_mode = 0
 side_coefficient = 0.7
 debug_mode = 0
 
@@ -294,7 +294,7 @@ def find_best_combination():
             combination_list.append([2**i * 3**j, i, j])
     combination_list.sort(reverse=True)
     for i in range(len(combination_list)):
-        if combination_list[i][0] <= 0.65 * combination_list[0][0]:
+        if combination_list[i][0] <= 0.75 * combination_list[0][0]:
             return combination_list[0:i]
 
     return 0
