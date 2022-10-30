@@ -2,17 +2,17 @@ import pandas as pd
 
 list_of_colons = []
 exception_max_limit = 5
-exception_min_limit = 2
+exception_min_limit = 3
 draw_max_limit = 5
-draw_min_lim = 2
+draw_min_lim = 3
 real_winner = []
 
 def get_current_week_coupon():
-    return pd.read_excel("output/spor_toto_predicts.xlsx", sheet_name='Sheet1')
+    return pd.read_excel("output/a.xlsx", sheet_name='cost_1024_i_10_j_0')
 
 
 def get_next_week_data_frame(week_number):
-    spor_toto_url = f'http://localhost:8080/sporTotoWeek/{week_number}'
+    spor_toto_url = f'http://localhost:8080/currentSporTotoList/{week_number}'
     return pd.read_json(spor_toto_url)
 
 
@@ -32,7 +32,7 @@ def get_combinations_for_week(rate_list, coupon_list, draw_count, exception_coun
             current_list.append(11111)
             current_list.append(draw_count)
             current_list.append(exception_count)
-            current_list.append(get_success_rate(current_list))
+            #current_list.append(get_success_rate(current_list))
             list_of_colons.append(current_list)
         else:
             current_list.append(100000)
@@ -63,9 +63,9 @@ def get_combinations_for_week(rate_list, coupon_list, draw_count, exception_coun
 
 
 if __name__ == '__main__':
-    df = get_next_week_data_frame(153)
+    df = get_next_week_data_frame(154)
     coupon_df = get_current_week_coupon()
-    real_winner = coupon_df['real_winner'].tolist()
+    #real_winner = coupon_df['real_winner'].tolist()
     get_combinations_for_week([df['handicapPercentage1'].tolist(), df['handicapPercentageX'].tolist(), df['handicapPercentage2'].tolist()], coupon_df['toto_results'].tolist(), 0, 0, [])
     df_output = pd.DataFrame(list_of_colons)
     df_output.to_excel('output/colon_combinations.xlsx')
