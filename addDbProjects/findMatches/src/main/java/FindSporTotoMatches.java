@@ -18,6 +18,17 @@ public class FindSporTotoMatches {
 		try {
 			for (int i = 153; i < 154; i++) {
 				Document doc = Jsoup.connect("https://www.nesine.com/sportoto/mac-sonuclari?pNo=" + i + "_1").get();
+				
+				Elements table2 = doc.select("div.table-responsive");
+				Elements prices = table2.get(1).select("tr");
+				JsonObject priceData = new JsonObject();
+				priceData.addProperty("weekNumber", i);
+				for(int j = 1; j < 5; j++) {
+//					guessed_15
+					priceData.addProperty("guessed_" + (16 - j), prices.get(j).select("td").get(2).text().split(",")[0].replace(".", ""));
+				}
+				Utils.sendPost("http://localhost:8080/addSporTotoPrize", priceData.toString());
+				
 
 				Elements table = doc.select("div.table-responsive");
 				Elements matches = table.get(0).select("tr");
