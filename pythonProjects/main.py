@@ -11,11 +11,12 @@ match_count_limit = 9
 goal_normalize_coefficient = 100
 normalized_goal_gap = 0.5
 normalized_draw_gap = 20
-money_limit = 512 * 2
+money_limit = 128 * 2
 learning_mode = 0
-next_week_mode = 0
+next_week_mode = 1
 side_coefficient = 0.7
 debug_mode = 0
+goal_diff_normalizer = 0.33
 
 
 def predict_score(df):
@@ -209,6 +210,28 @@ def calculate_triple_double_arr(df, n, m):
     return result_arr
 
 
+def normalize_goal_difference(row, is_home):
+    x = 0
+    if is_home:
+        if row['homeMatchScore'] > row['awayMatchScore']:
+            n = row['homeMatchScore'] - row['awayMatchScore'] - 1
+            if n > round(1/goal_diff_normalizer):
+                x = n - round(1/goal_diff_normalizer)
+                n = round(1/goal_diff_normalizer)
+            return row['homeMatchScore'] - n * (n+1) * goal_diff_normalizer / 2 - x
+        else:
+            return row['homeMatchScore']
+    else:
+        if row['homeMatchScore'] < row['awayMatchScore']:
+            n = row['awayMatchScore'] - row['homeMatchScore'] - 1
+            if n > round(1/goal_diff_normalizer):
+                x = n - round(1/goal_diff_normalizer)
+                n = round(1/goal_diff_normalizer)
+            return row['awayMatchScore'] - n * (n + 1) * goal_diff_normalizer / 2 - x
+        else:
+            return row['awayMatchScore']
+
+
 def get_home_df(teamId, date, target_home_percentage, target_away_percentage):
     date = date.replace('/', '-')
     match_detail_url_home = f'http://localhost:8080/matchDetailHome/{teamId}/2021-01-01/{date}'
@@ -219,15 +242,18 @@ def get_home_df(teamId, date, target_home_percentage, target_away_percentage):
     df_temp_away = df_temp_away.tail(match_count_limit)
     df_temp_home["side_coefficient"] = 1
     df_temp_away["side_coefficient"] = side_coefficient
-    df_temp_away.rename(columns = {'homeMatchScore':'awayMatchScore', 'awayMatchScore':'homeMatchScore'}, inplace = True)
+    df_temp_away.rename(columns={'homeMatchScore': 'awayMatchScore', 'awayMatchScore': 'homeMatchScore'}, inplace=True)
+    df_temp_away.rename(columns={'handicapPercentage1': 'handicapPercentage2', 'handicapPercentage2': 'handicapPercentage1'}, inplace=True)
     df_temp = pd.concat([df_temp_home, df_temp_away])
     df_temp.sort_values(by=['date'], inplace=True)
     df_temp['winner'] = df_temp.apply(lambda row: create_winner_column(row), axis=1)
     df_temp["order"] = [i for i in range(1, 1 + df_temp.shape[0])]
     df_temp['priority_home'] = df_temp.apply(lambda row: calculate_priority(target_home_percentage, row, 1), axis=1)
-    df_temp['contribution_home'] = df_temp.apply(lambda row: row['homeMatchScore'] * row['priority_home'], axis=1)
+    df_temp['normalizedHomeMatchScore'] = df_temp.apply(lambda row: normalize_goal_difference(row, True), axis=1)
+    df_temp['contribution_home'] = df_temp.apply(lambda row: row['normalizedHomeMatchScore'] * row['priority_home'], axis=1)
     df_temp['priority_away'] = df_temp.apply(lambda row: calculate_priority(target_away_percentage, row, 2), axis=1)
-    df_temp['contribution_away'] = df_temp.apply(lambda row: row['awayMatchScore'] * row['priority_away'], axis=1)
+    df_temp['normalizedAwayMatchScore'] = df_temp.apply(lambda row: normalize_goal_difference(row, False), axis=1)
+    df_temp['contribution_away'] = df_temp.apply(lambda row: row['normalizedAwayMatchScore'] * row['priority_away'], axis=1)
     df_temp.drop(['id', 'teamName'], inplace=True, axis=1)
     if debug_mode == 1:
         print()
@@ -254,9 +280,12 @@ def get_away_df(teamId, date, target_home_percentage, target_away_percentage):
     df_temp['winner'] = df_temp.apply(lambda row: create_winner_column(row), axis=1)
     df_temp["order"] = [i for i in range(1, 1 + df_temp.shape[0])]
     df_temp['priority_home'] = df_temp.apply(lambda row: calculate_priority(target_home_percentage, row, 1), axis=1)
-    df_temp['contribution_home'] = df_temp.apply(lambda row: row['homeMatchScore'] * row['priority_home'], axis=1)
+    df_temp['normalizedHomeMatchScore'] = df_temp.apply(lambda row: normalize_goal_difference(row, True), axis=1)
+    df_temp['contribution_home'] = df_temp.apply(lambda row: row['normalizedHomeMatchScore'] * row['priority_home'], axis=1)
     df_temp['priority_away'] = df_temp.apply(lambda row: calculate_priority(target_away_percentage, row, 2), axis=1)
-    df_temp['contribution_away'] = df_temp.apply(lambda row: row['awayMatchScore'] * row['priority_away'], axis=1)
+    df_temp['normalizedAwayMatchScore'] = df_temp.apply(lambda row: normalize_goal_difference(row, False), axis=1)
+    df_temp['contribution_away'] = df_temp.apply(lambda row: row['normalizedAwayMatchScore'] * row['priority_away'], axis=1)
+
     df_temp.drop(['id', 'teamName'], inplace=True, axis=1)
     if debug_mode == 1:
         print()
